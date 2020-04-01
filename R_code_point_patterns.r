@@ -99,7 +99,8 @@ cl2 <- colorRampPalette(c('green', 'dark green', 'light blue', 'blue'))(200)
 plot(d, col=cl2)
 
 # Aggiungo i dati (punti) del Covid
-points(covids)
+# e cambio al colore ai punti in vista del grafico finale
+points(covids, col="red")
 
 # Carico i confini dei Paesi attraverso "coastlines" con risoluz. 10 m
 # Cartella contiene vari file, in particolare lo shapefile
