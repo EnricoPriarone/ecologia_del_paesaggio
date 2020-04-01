@@ -1,3 +1,4 @@
+# 31/03
 # Codice per analisi delle strutture relazionate ai punti nello spazio (point patterns)
 
 # Installo tutti i pacchetti necessari
@@ -71,3 +72,48 @@ points(covids)
 
 # Salvo codice R su file come .rdata
 q()
+
+# 01/04
+# Richiamo la cartella "lab" (dove ho anche .Rdata)
+# Ricarico i dati di ieri richiamando .Rdata
+setwd("/Users/enricopriarone/lab")
+load("point_pattern.RData") # Così ho caricato il file!
+
+# Per visualizzare i file:
+ls()
+
+# Carico "spatstat"
+library(spatstat)
+
+# Faccio grafico sulla densità
+# e cambio un po' le cose
+# ad esempio creando una palette di colori, tramite un array (con "c")
+# Occhio: in questa funzione usare virgolette singole!
+# Metto il numero di livelli di colore che voglio, aggiungendo tra parentesi il numero
+plot(d)
+cl <- colorRampPalette(c('yellow', 'orange', 'red'))(100) # Funzione importantissima!
+plot(d, col=cl)
+
+# Esercizio: plot con colori da verde a blu
+cl2 <- colorRampPalette(c('green', 'dark green', 'light blue', 'blue'))(200)
+plot(d, col=cl2)
+
+# Aggiungo i dati (punti) del Covid
+points(covids)
+
+# Carico i confini dei Paesi attraverso "coastlines" con risoluz. 10 m
+# Cartella contiene vari file, in particolare lo shapefile
+# Associo il file alla funzione file vettoriali
+# Se dà errore è perché non ho caricato la libreria "rgdal": la carico prima di "coastlines"
+library(rgdal) # Permette in tutti i software e sistemi operativi di leggere raster e vettori
+coastlines <- readOGR("ne_10m_coastline.shp")
+
+# Faccio plot coastlines e lo aggiungo al plot precedente con "add"
+plot(coastlines, add=T)
+
+# Più avanti andremo a cartografare anche il numero di casi!
+
+# Esercizio: plot mappa di densità con nuova colorazione e aggiunta coastlines
+cl3 <- colorRampPalette(c('light blue', 'green', 'dark green', 'blue'))(400)
+plot(d, col=cl3)
+plot(coastlines, add=T)
