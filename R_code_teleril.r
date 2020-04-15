@@ -241,3 +241,5 @@ par(mfrow=c(2,1))
 plot(difdvi, col=cldifdvi)
 plot(difdvilr50, col=cldifdvi)
 # Noto dalla differenza che nella prima immagine posso individuare le micro disomogeneità
+
+dev.off()
