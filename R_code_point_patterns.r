@@ -73,6 +73,7 @@ points(covids)
 # Salvo codice R su file come .rdata
 q()
 
+
 # 01/04
 # Richiamo la cartella "lab" (dove ho anche .Rdata)
 # Ricarico i dati di ieri richiamando .Rdata
@@ -118,3 +119,89 @@ plot(coastlines, add=T)
 cl3 <- colorRampPalette(c('light blue', 'green', 'dark green', 'blue'))(400)
 plot(d, col=cl3)
 plot(coastlines, add=T)
+
+
+# 22/04
+# Carico "point_pattern.RData"
+setwd("/Users/enricopriarone/lab")
+load("point_pattern.RData")
+ls()
+
+# Esercizio: cartografare densità dei punti
+# Per farlo riprendo comandi della volta scorsa e li aggiusto per i miei obiettivi
+library(spatstat)
+library(rgdal)
+plot(d)
+cl <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
+plot(d, col=cl)
+points(covids, col="grey")
+coastlines <- readOGR("ne_10m_coastline.shp")
+plot(coastlines, add=T)
+
+# Andiamo a vedere il numero di casi con l'interpolazione,
+# che stima i numeri nelle zone in cui non è stato fatto il campionamento
+# Con funzione "marks" andiamo a prendere i dati nel point pattern "covids"
+# Il dollaro ci serve per non fare l'"attach"
+head(covid)
+marks(covids) <- covid$cases
+
+# Chiamo "s" la stima dei valori attraverso la funzione di smooth
+s <- Smooth(covids)
+plot(s)
+
+# Rifare plot di s, cambiando palette e aggiungendo punti e coastlines
+cls <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
+plot(s, col=cls)
+points(covids, col="grey")
+coastlines <- readOGR("ne_10m_coastline.shp")
+plot(coastlines, add=T, main="Interpolazione")
+# Si vede che mettendo il focus sul numero di casi l'Asia a febbraio era la più colpita
+
+# Con "text" vediamo anche valori dei punti
+text(covids) # Ma questa volta ci dà l'ID, non il valore dei casi
+
+# Facciamo una carta finale con entrambi i plot
+# Usiamo un multiframe
+par(mfrow=c(2,1))
+# densità:
+cl <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
+plot(d, col=cl, main="Densità")
+points(covids, col="grey")
+coastlines <- readOGR("ne_10m_coastline.shp")
+plot(coastlines, add=T)
+# interpolazione:
+cls <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
+plot(s, col=cls, main="Interpolazione")
+points(covids, col="grey")
+coastlines <- readOGR("ne_10m_coastline.shp")
+plot(coastlines, add=T)
+
+# Chiudo il grafico
+dev.off()
+
+# San Marino, caso di studio
+# Carico i dati esterni ("Tesi.RData") che ho scaricato da iol
+# Serve libreria spatstat
+# library(spatstat)
+load("Tesi.RData")
+ls()
+head(Tesi)
+
+# Facciamo un attach della tabella per usarla con il point pattern
+attach(Tesi)
+
+# Point pattern: x, y, c(xmin,xmax), c(ymin,ymax)
+# Mettiamo anche i limiti per le due coordinate, trattandosi di un'area ristretta
+# Uso funzione summary(dataset) per avere il sommario della tabella
+summary(Tesi)
+# y(lat.) va da 43.91 a 43.94, y(lon.) da 12.42 a 12.46
+# Ma noi lasciamo un po' di margine
+Tesippp <- ppp(Longitude, Latitude, c(12.41, 12.47), c(43.9, 43.95))
+
+# Facciamo densità punti e la graficizziamo
+dT <- density(Tesippp)
+plot(dT)
+points(Tesippp)
+# Nella parte centrale c'è densità più alta
+
+dev.off()
