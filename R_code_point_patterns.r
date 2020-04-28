@@ -205,3 +205,52 @@ points(Tesippp)
 # Nella parte centrale c'è densità più alta
 
 dev.off()
+
+# 28/04
+setwd("/Users/enricopriarone/lab")
+load("Tesi.RData")
+ls()
+# Ottengo i file presenti:
+# "dT" è density map di Tesippp
+# "Tesi" è un dataset
+# "Tesippp" è il point pattern del file "Tesi" (da libreria "Spatstat")
+
+# Associamo i valori che vogliamo stimare
+library(spatstat)
+plot(dT)
+points(Tesippp, col="green")
+
+# Andiamo a stimare la ricchezza specifica
+# Con "head" vedo che si trova sotto "Species_richness"
+# "marks" va a prendere i valori dalla tabella e li associa ai punti del ppp
+head(Tesi)
+marks(Tesippp) <- Tesi$Species_richness
+
+# Creo mappa e l'associo a Smooth
+interpol <- Smooth(Tesippp)
+
+# Usiamo file su San Marino
+# Carico libreria "rgdal"
+library(rgdal)
+sanmarino <- readOGR("San_Marino.shp")
+plot(sanmarino)
+plot(interpol, add=T) # Importante! Con "T"/"True" aggiunge nuova mappa a quella precedente
+points(Tesippp,col="green")
+# Mappa va a sovrapporsi al territorio di San Marino
+plot(sanmarino, add=T) # Così i confini di Stato si sovrappongono al plot "interpol"
+
+# Esercizio: plot multiframe di densità e interpolazione
+par(mfrow=c(2,1))
+plot(dT, main="Densità di punti")
+points(Tesippp, col="green")
+plot(interpol, main="Stima della ricchezza di specie")
+points(Tesippp, col="green")
+
+# Esercizio: inverto la disposizione del grafico
+par(mfrow=c(1,2))
+plot(dT, main="Densità di punti")
+points(Tesippp, col="green")
+plot(interpol, main="Stima della ricchezza di specie")
+points(Tesippp, col="green")
+
+dev.off()
