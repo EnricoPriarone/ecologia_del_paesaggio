@@ -86,3 +86,44 @@ output <- data.frame(cover,before,after)
 View(output)
 
 dev.off()
+
+# 05/05
+setwd("/Users/enricopriarone/lab")
+load("defor.RData") # Uso questo perché il mio ".RData" mi dà errore: i dati saranno un po' diversi
+ls()
+library(raster)
+library(ggplot2)
+install.packages("gridExtra")
+library(gridExtra)
+
+par(mfrow=c(1,2))
+cl <- colorRampPalette(c('black','green'))(100) # 
+plot(d1c$map, col=cl)
+plot(d2c$map, col=cl)
+output
+
+# Creo grafico con percentuale di foresta/agricoltura prima della deforestazione ("before")
+ggplot(output, aes(x=cover, y=before, color=cover)) +
+geom_bar(stat="identity", fill="white")
+# agricoltura occupa percentuale molto bassa: ca. 10%; contro il ca. 90% della foresta
+
+# Esercizio: faccio lo stesso per il dopo deforestazione ("after")
+ggplot(output, aes(x=cover, y=after, color=cover)) +
+geom_bar(stat="identity", fill="white")
+# agricoltura è vicina al 50%; foresta lo supera appena
+
+# Usiamo funzione "par"
+# Necessita del pacchetto "gridExtra", che installiamo
+# Facciamo istogramma delle percentuali associando prima i due grafici a un nome
+grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) +
+geom_bar(stat="identity", fill="white")
+
+grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) +
+geom_bar(stat="identity", fill="white")
+
+# Esercizio: usare "grid.arrange" per graficizzarli
+grid.arrange(grafico1, grafico2, nrow=1)
+
+# Manca da cambiare la y! Vedi poi "iol"
+
+dev.off()
