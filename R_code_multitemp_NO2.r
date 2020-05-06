@@ -98,3 +98,5 @@ grid.arrange(grafico1, grafico2, nrow = 1)
 # Così scala nelle ordinate (y) è la stessa
 
 dev.off()
+
+#
