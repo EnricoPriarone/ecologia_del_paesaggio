@@ -69,34 +69,26 @@ plot(EN13, col=cl)
 dev.off()
 
 # 06/05
-setwd("/Users/enricopriarone/lab")
-load(".RData")
-ls()
+# Cambio la working directory con la nuova cartella
+setwd("/Users/enricopriarone/lab/esa_no2")
 library(raster)
-library(ggplot2)
-library(gridExtra)
 
-grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) +
-geom_bar(stat="identity", fill="white")
-grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) +
-geom_bar(stat="identity", fill="white")
+# creo una lista di pattern, di cui diciamo che sono nominati ".png"
+rlist <- list.files(pattern=".png")
+rlist
 
-grid.arrange(grafico1, grafico2, nrow = 1)
+# usiamo funzioni "raster" (non "brick", perché carica l'intero pacchetto layer satellitare: a noi ne serve uno solo)
+# e "lapply"
+listafinale <- lapply(rlist, raster)
+listafinale
+# sono 13 RasterLayer
 
-# "ylim" funziona con "ggplot" e permette di inserire in limite all'ordinata
-# Prendere libro "ggplot2. Elegant graphics..." di Whickam!
-grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) + 
-geom_bar(stat="identity", fill="white") +
-ylim(0, 100)
+# usiamo funzione "stack" per creare un pacchetto unico di dati: creiamo un'unica immagine
+EN <- stack(listafinale)
+EN
 
-grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) + 
-geom_bar(stat="identity", fill="white") +
-ylim(0, 100)
-
-# Esercizio: usa grid.arrange graficizzare
-grid.arrange(grafico1, grafico2, nrow = 1)
-# Così scala nelle ordinate (y) è la stessa
+cl <- colorRampPalette(c('red','orange','yellow'))(100)
+plot(EN, col=cl)
+# Questo permette di caricare il set completo con tutte le n immagini, senza lavorare su ogni singola
 
 dev.off()
-
-#
