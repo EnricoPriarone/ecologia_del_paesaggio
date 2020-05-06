@@ -67,3 +67,34 @@ plot(EN13, col=cl)
 # Domani proviamo col "for"
 
 dev.off()
+
+# 06/05
+setwd("/Users/enricopriarone/lab")
+load(".RData")
+ls()
+library(raster)
+library(ggplot2)
+library(gridExtra)
+
+grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) +
+geom_bar(stat="identity", fill="white")
+grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) +
+geom_bar(stat="identity", fill="white")
+
+grid.arrange(grafico1, grafico2, nrow = 1)
+
+# "ylim" funziona con "ggplot" e permette di inserire in limite all'ordinata
+# Prendere libro "ggplot2. Elegant graphics..." di Whickam!
+grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) + 
+geom_bar(stat="identity", fill="white") +
+ylim(0, 100)
+
+grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) + 
+geom_bar(stat="identity", fill="white") +
+ylim(0, 100)
+
+# Esercizio: usa grid.arrange graficizzare
+grid.arrange(grafico1, grafico2, nrow = 1)
+# Così scala nelle ordinate (y) è la stessa
+
+dev.off()
