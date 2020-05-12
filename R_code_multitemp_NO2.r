@@ -92,3 +92,30 @@ plot(EN, col=cl)
 # Questo permette di caricare il set completo con tutte le n immagini, senza lavorare su ogni singola
 
 dev.off()
+
+# 12/05
+# Grafici e boxplot
+
+library(raster)
+setwd("/Users/enricopriarone/lab/esa_no2")
+
+rlist <- list.files(pattern=".png")
+rlist
+
+listafinale <- lapply(rlist, raster)
+listafinale
+
+EN <- stack(listafinale)
+EN
+
+difEN <- EN$EN_0013 - EN$EN_0001
+cld <- colorRampPalette(c('blue','white','red'))(100)
+plot(difEN, col=cld)
+
+cl <- colorRampPalette(c('red','orange','yellow'))(100)
+plot(EN, col=cl)
+
+# Creiamo un boxplot di EN in orizzontale
+boxplot(EN, horizontal=T,outline=F,axes=T)
+
+dev.off()
