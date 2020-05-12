@@ -116,6 +116,6 @@ cl <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(EN, col=cl)
 
 # Creiamo un boxplot di EN in orizzontale
-boxplot(EN, horizontal=T,outline=F,axes=T)
+boxplot(EN, horizontal=T,outline=F)
 
 dev.off()
