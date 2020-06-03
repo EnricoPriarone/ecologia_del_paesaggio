@@ -12,11 +12,13 @@
 # 7. R_code_multitemp.r   
 # 8. R_code_multitemp_NO2.r   
 # 9. R_code_snow.r   
-# 10. R_code_patches.r   
+# 10. R_code_patches.r  
+# 11. R_code_crop.r
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 
@@ -137,8 +139,9 @@ plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", yla
 plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", ylab="rame", cex.lab=1.5, cex=2)
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 ### 2. R_code_spatial.R
@@ -216,8 +219,9 @@ spplot(meuse, "zinc")
 # ma vicino all'acqua valori sono molto alti
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 ### 3. R_code_spatial_2.R
@@ -266,8 +270,9 @@ setwd("/Users/enricopriarone/lab")
 covid <- read.table("covid_agg.csv", head=T)
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 ### 4. R_code_point_patterns.R
@@ -530,8 +535,9 @@ points(Tesippp, col="green")
 dev.off()
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 ### 5. R_code_teleril.R
@@ -783,8 +789,9 @@ plot(difdvilr50, col=cldifdvi)
 dev.off()
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
 
 ### 6. R_code_landcover.R
@@ -830,10 +837,11 @@ dev.off()
 # Con 2 classi l'incertezza è più bassa che con 4
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
-7. R_code_multitemp.R
+### 7. R_code_multitemp.R
 
 # R code analisi multitemporale di variazione della land cover
 # Copertura del suolo viene da telerilevazioni
@@ -998,10 +1006,12 @@ grid.arrange(grafico1, grafico2, nrow = 1)
 dev.off()
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
-8. R_code_multitemp_NO2.R
+
+### 8. R_code_multitemp_NO2.R
 
 # Codice analisi dati NO2 da Sentinel-2 ESA (Copernicus), da gennaio a marzo 2020
 
@@ -1126,10 +1136,12 @@ boxplot(EN, horizontal=T,outline=F)
 dev.off()
 
 
-#############################################
-#############################################
+###################################################################################################
+###################################################################################################
+###################################################################################################
 
-9. R_code_snow.r
+
+### 9. R_code_snow.r
 
 # Analisi copertura nevosa con dati Copernicus
 # https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
@@ -1183,7 +1195,7 @@ dev.off()
 #############################################
 
 
-10. R_code_patches.R
+### 10. R_code_patches.R
 
 # Lavoriamo sui patch del paesaggio
 # Dopo la variazione dell'area, studiamo la variazione delle patch!
@@ -1192,7 +1204,7 @@ setwd("/Users/enricopriarone/lab")
 library(raster)
 library(ggplot2)
 
-# Occorre installare «igraph» perché non l'ha scaricatp direttamente con libreria «raster»
+# Occorre installare «igraph» perché non l'ha scaricato direttamente con libreria «raster»
 install.packages("igraph")
 library(igraph)
 
@@ -1262,3 +1274,62 @@ ggplot(output, aes(x=time, y=npatches, color="red")) + geom_bar(stat="identity",
 
 dev.off()
 
+
+###################################################################################################
+###################################################################################################
+###################################################################################################
+
+
+### 11. R_code_crop.r
+# Simulazione esame
+
+setwd("/Users/enricopriarone/lab/snow")
+library(raster)
+
+# Esercizio: caricare tutte le immagini «snow»
+
+# creo una lista di pattern «snow2», perché è presente anche .tif previsionale
+rlist <- list.files(pattern="snow2")
+rlist
+
+# uso funzioni "raster" e "lapply"
+listasnow <- lapply(rlist, raster)
+listasnow
+# 6 RasterLayer
+
+# uso funzione "stack" per creare un pacchetto unico di dati: creiamo un'unica immagine
+snow.multitemp <- stack(listasnow)
+snow.multitemp
+
+clb <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+plot(snow.multitemp, col=clb)
+
+# Facciamo zoom: due soluzioni
+# Plottiamo un'unica immagine
+plot(snow.multitemp$snow2010r, col=clb)
+
+# a) usiamo coordinate
+extension <- c(6, 20, 35, 50)
+zoom(snow.multitemp$snow2010r, ext=extension)
+
+# b) tramite disegno
+plot(snow.multitemp$snow2010r, col=clb)
+
+# Ora facciamo un vero ritaglio, un crop
+# Lo facciamo definendo le coordinate
+extension <- c(6, 20, 35, 50)
+snow2010r.italy <- crop(snow.multitemp$snow2010r, extension)
+plot(snow2010r.italy, col=clb)
+
+# Esercizio: applichiamo la funzione «crop» su tutte le immagini, ossia su più livelli
+snow.multitemp.italy <- crop(snow.multitemp, extension)
+snow.multitemp.italy  # Da qui prendo valori max e min per scala
+plot(snow.multitemp.italy, col=clb, zlim=c(20,200))
+
+# Facciamo analisi sullo stack tagliato su Italia
+# Facciamo boxplot (ma volendo anche regressione, previsione con «prediction» ecc.)
+boxplot(snow.multitemp.italy, horizontal=T,outline=F)
+
+# Vedere file caricato  su iol («prediction.r»?) e nel caso contattare il prof
+
+dev.off()
