@@ -134,11 +134,11 @@ plot(cadmium, copper, pch=19)
 plot(cadmium, copper, pch=19, col="green", main="Primo plot")
 # EP: con «yellow» non si vede nulla: bocciato
 
-# EP: voglio cambiare le lables, le etichette
+# EP: voglio cambiare le labels, le etichette
 # EP: «xlab» è variabile 1, «ylab» è la var. 2
 plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", ylab="rame")
 
-# EP: argomento che esagera i caratteri delle lables (es. «cex.lab=1.5»)
+# EP: argomento che esagera i caratteri delle labels (es. «cex.lab=1.5»)
 # EP: e cambio punti (con «cex»!)
 plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", ylab="rame", cex.lab=1.5, cex=2)
 
@@ -173,7 +173,7 @@ plot(cadmium, lead, col="pink", pch=8, cex=2)
 # Esercizio: plot di copper e zinc con simbolo triangolo (17) e colore verde
 plot(copper, zinc, col="green", pch=17, cex=2)
 
-# EP: cambio anche le etichette (lables)
+# EP: cambio anche le etichette (labels)
 plot(copper, zinc, col="green", pch=17, cex=2, xlab="rame", ylab="zinco", cex.lab=1.5)
 
 # EP: creo un pannello che contenga più grafici:
@@ -249,37 +249,38 @@ coordinates(meuse)=~x+y
 
 spplot(meuse, "zinc")
 
-# Esercizio: fare "spplot" con il rame
+# Esercizio: fare «spplot» con il rame
 spplot(meuse, "copper")
 
-# EP: lo stesso plottaggio si può fare con "bubble"
+# EP: lo stesso plottaggio si può fare con «bubble» --> bubble plot
 # EP: il risultato è più bello!
 bubble(meuse, "zinc")
 
-# Esercizio: fare "bubble" del rame in rosso
+# Esercizio: fare «bubble» del rame in rosso
 bubble(meuse, "copper", col="red")
 
 # EP: foraminiferi (Sofia) e carbon capture (Matteo)
-# EP: "c" è un array (o vettore)
-# EP: al vettore occorre dare un nome, tramite "<-"
-# EP: abbiamo creato un oggetto
+# EP: «c» è un array (o vettore)
+# EP: al vettore occorre dare un nome, tramite «<-» (assegnazione)
+# EP: abbiamo creato un oggetto (!!!)
 foram <- c(10, 20, 35, 55, 67, 80)
 carbon <- c(5, 15, 30, 70, 85, 99)
 
 # EP: vedo se sono correlati
+# EP : per farlo li graficizzo
 plot(foram, carbon, col="green", cex=2, pch=19)
 
 # EP: scarico dati e tabelle da iol (è in .csv)
-# EP: sono dati dall'esterno sul covid-19
-# EP: lo prendo dalla cartella "lab"
+# EP: sono dati dall'esterno su Covid-19: devo importarli
+# EP: lo prendo dalla cartella «lab»
 # EP: -> percorso/lab (N.B.!!!)
-setwd("/Users/enricopriarone/lab")
+setwd("/Users/enricopriarone/lab") # EP: set della working directory
 
 # EP: leggo la tabella
-# EP: occorre spiegare a R che la prima riga contiene i titoli ("header")
-# EP: head=T o head=TRUE (sempre in maiuscolo!!!), perché l'header c'è!
-# EP: Al contrario dovrei mettere FALSE (o F)
-# EP: associo la funzione a "covid" con "<-"
+# EP: occorre spiegare a R che la prima riga contiene i titoli («header») delle variabili
+# EP: «head=T» o «head=TRUE» (sempre in maiuscolo!!!), perché l'header c'è!
+# EP: al contrario dovrei mettere «FALSE» (o «F»)
+# EP: associo la funzione a «covid» con «<-»
 covid <- read.table("covid_agg.csv", head=T)
 
 
@@ -299,7 +300,11 @@ install.packages("rgdal")
 install.packages("ggplot2")
 install.packages("spatstat")
 
-# EP: Richiamo file con dati Covid
+library(ggplot2) # EP: o require(ggplot2)
+library(spatstat)
+library(rgdal)
+
+# EP: Faccio set della wd, per poi richiamare file con dati Covid
 setwd("/Users/enricopriarone/lab")
 
 # EP: Importo dati tabella
@@ -307,55 +312,58 @@ covid <- read.table("covid_agg.csv", head=T)
 head(covid)
 
 # EP: Facciamo un plot per visualizzare la distribuzione dei dati
-# EP: Dollaro serve a relazionare ogni colonna al proprio dataset
-# EP: Altrimenti uso "attach(covid)" e poi "plot(country, cases)"
+# EP: Dollaro («$») serve a relazionare ogni colonna al proprio dataset
+# EP: Altrimenti uso «attach(covid)» e poi «plot(country, cases)»
 plot(covid$country, covid$cases)
 
 # EP: Grafico si vede male, allora lo rendiamo verticale
-# EP: Provo con lable=0 -> non è cambiato nulla (perché è il default) -> è parallel
-plot(covid$country, covid$cases, las=0) # EP: parallel lables
+# EP: Provo con labels uguale a 0 («las=0») -> non è cambiato nulla (perché è il default) -> è parallel!
+plot(covid$country, covid$cases, las=0) # EP: parallel labels
 
-# EP: Con las=1 ho orizzontale ("horizontal")
+# EP: Con las=1 ho orizzontale («horizontal»)
 # EP: Con las=2 labels sono perpendicolari
 # EP: Con las=3 sono tutte verticali
-plot(covid$country, covid$cases, las=1) # EP: horizontal lables
-plot(covid$country, covid$cases, las=2) # EP: perpendicular lables
-plot(covid$country, covid$cases, las=3) # EP: vertical lables
+plot(covid$country, covid$cases, las=1) # EP: horizontal labels
+plot(covid$country, covid$cases, las=2) # EP: perpendicular labels
+plot(covid$country, covid$cases, las=3) # EP: vertical labels
 
-# EP: Diminuisco grandezza punti con "cex.axis=0.3"
+# EP: Diminuisco grandezza delle etichette ad es. con «cex.axis=0.3»
 plot(covid$country, covid$cases, las=3, cex.axis=0.3)
 
-# EP: Faccio plot tramite ggplot
-library(ggplot2) # EP: o require(ggplot2)
+# EP: Faccio plot tramite «ggplot»
+# library(ggplot2) o require(ggplot2) [vedi inizio codice]
 
 # EP: Visualizzo dati in ggplot
+# EP: uso il data set «mpg», contenuto nel pacchetto «ggplot2»
+# EP: «mpg» contiene i dati relativi al risparmio di carburante tra 1999 e 2008 per 38 modelli di automobili popolari
 data(mpg)
 head(mpg)
 
-# EP: dichiaro data (mpg)
-# EP: diachiaro aes (aesthetics)
-# EP: dichiaro tipo di geometria attraverso un'altra micro funzione
+# Funzione «ggplot» serve a creare grafici con il pacchetto «ggplot2»
+# EP: dichiaro data set («mpg»)
+# EP: dichiaro «aes()» (aesthetics), ossia l'estetica con cui vengono assegnate le variabili agli assi («x=» e «y=»)
+# EP: dichiaro tipo di geometria attraverso un'altra micro funzione («geom_»), che in questo caso specifica che vogliamo usare dei punti
 ggplot(mpg, aes(x=displ, y=hwy)) + geom_point()
 
-# EP: provo a trasformare in grafico per linee
+# EP: provo a trasformare in grafico per linee (cambio geometria)
 # EP: provo anche con i poligoni
 ggplot(mpg, aes(x=displ, y=hwy)) + geom_line()
 ggplot(mpg, aes(x=displ, y=hwy)) + geom_polygon()
 
-# EP: Faccio lo stesso con i dati su Covid già caricati
-# EP: Prima metto i dati ("covid"), poi le aes (le cerco con "names" o "head" -> scelgo "lon", "lat" e i "cases" per grandezza)
+# EP: Faccio lo stesso con i dati su Covid-19 già caricati
+# EP: Prima metto i dati («covid»), poi le aes (le cerco con «names» o «head» -> scelgo «lon», «lat» e i «cases» per grandezza)
 ggplot(covid, aes(x=lon, y=lat, size=cases)) + geom_point()
 
-# EP: Richiamo "spatstat"
-library(spatstat)
+# EP: Richiamo «spatstat» e creo un data set apposito
+# library(spatstat) [vedi inizio codice]
 
-# EP: Uso applicazione point pattern e la collego a dati Covid
+# EP: Uso applicazione point pattern («ppp») e la collego a dati Covid-19
 # EP: Metto lon e lat e i range di x(-180 ≤ lon ≤ 180) e y(-90 ≤ lat ≤ 90)
 attach(covid)
 covids <- ppp(lon, lat, c(-180, 180), c(-90, 90))
 
-# EP: Faccio funzione density, ossia la densità del set spaziale sul Covid
-# EP: e ne faccio il grafico
+# EP: Faccio funzione «density», ossia la densità del set spaziale sul Covid-19
+# EP: e ne faccio il grafico, una mappa di densità
 d <- density(covids)
 plot(d)
 
@@ -363,11 +371,12 @@ plot(d)
 points(covids)
 
 # EP: Salvo codice R su file come .rdata
-q()
+# EP: q() -->  non necessario in Mac:
+# EP: è sufficiente chiudere R e selezionare «Salva»
 
 
 # 01/04
-# EP: Richiamo la cartella "lab" (dove ho anche .Rdata)
+# EP: Richiamo la cartella «lab» (dove ho anche .Rdata)
 # EP: Ricarico i dati di ieri richiamando .Rdata
 setwd("/Users/enricopriarone/lab")
 load("point_pattern.RData") # EP: Così ho caricato il file!
@@ -375,12 +384,13 @@ load("point_pattern.RData") # EP: Così ho caricato il file!
 # EP: Per visualizzare i file:
 ls()
 
-# EP: Carico "spatstat"
+# EP: Carico «spatstat» e «rgdal»
 library(spatstat)
+library(rgdal) # EP: Permette in tutti i software e sistemi operativi di leggere raster e vettori
 
 # EP: Faccio grafico sulla densità
 # EP: e cambio un po' le cose
-# EP: ad esempio creando una palette di colori, tramite un array (con "c")
+# EP: ad esempio creando una palette di colori, tramite un array (con «c()»)
 # EP: Occhio: in questa funzione usare virgolette singole!
 # EP: Metto il numero di livelli di colore che voglio, aggiungendo tra parentesi il numero
 plot(d)
@@ -391,18 +401,18 @@ plot(d, col=cl)
 cl2 <- colorRampPalette(c('green', 'dark green', 'light blue', 'blue'))(200)
 plot(d, col=cl2)
 
-# EP: Aggiungo i dati (punti) del Covid
+# EP: Aggiungo i dati (punti) del Covid-19, richiamandoli
 # EP: e cambio al colore ai punti in vista del grafico finale
 points(covids, col="red")
 
-# EP: Carico i confini dei Paesi attraverso "coastlines" con risoluz. 10 m
+# EP: Carico i confini dei Paesi attraverso «coastlines» con risoluz. 10 m
 # EP: Cartella contiene vari file, in particolare lo shapefile
 # EP: Associo il file alla funzione file vettoriali
-# EP: Se dà errore è perché non ho caricato la libreria "rgdal": la carico prima di "coastlines"
-library(rgdal) # EP: Permette in tutti i software e sistemi operativi di leggere raster e vettori
+# EP: Se dà errore è perché non ho caricato la libreria «rgdal»: la carico prima di «coastlines»
+# EP: library(rgdal) --> permette in tutti i software e sistemi operativi di leggere raster e vettori [vedi inizio codice]
 coastlines <- readOGR("ne_10m_coastline.shp")
 
-# EP: Faccio plot coastlines e lo aggiungo al plot precedente con "add"
+# EP: Faccio plot coastlines e lo aggiungo al plot precedente con «add=»
 plot(coastlines, add=T)
 
 # EP: Più avanti andremo a cartografare anche il numero di casi!
@@ -414,7 +424,7 @@ plot(coastlines, add=T)
 
 
 # 22/04
-# EP: Carico "point_pattern.RData"
+# EP: Carico «point_pattern.RData»
 setwd("/Users/enricopriarone/lab")
 load("point_pattern.RData")
 ls()
@@ -432,16 +442,16 @@ plot(coastlines, add=T)
 
 # EP: Andiamo a vedere il numero di casi con l'interpolazione,
 # EP: che stima i numeri nelle zone in cui non è stato fatto il campionamento
-# EP: Con funzione "marks" andiamo a prendere i dati nel point pattern "covids"
-# EP: Il dollaro ci serve per non fare l'"attach"
+# EP: Con funzione «marks» andiamo a prendere i dati nel point pattern «covids»
+# EP: Il dollaro ci serve per non fare l'«attach»
 head(covid)
 marks(covids) <- covid$cases
 
-# EP: Chiamo "s" la stima dei valori attraverso la funzione di smooth
+# EP: Chiamo «s» la stima dei valori attraverso la funzione di smooth («Smooth»)
 s <- Smooth(covids)
 plot(s)
 
-# EP: Rifare plot di s, cambiando palette e aggiungendo punti e coastlines
+# EP: Rifare plot di «s», cambiando palette e aggiungendo punti e coastlines
 cls <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
 plot(s, col=cls)
 points(covids, col="grey")
@@ -449,11 +459,11 @@ coastlines <- readOGR("ne_10m_coastline.shp")
 plot(coastlines, add=T, main="Interpolazione")
 # EP: Si vede che mettendo il focus sul numero di casi l'Asia a febbraio era la più colpita
 
-# EP: Con "text" vediamo anche valori dei punti
+# EP: Con «text» vediamo anche valori dei punti sulla mappa
 text(covids) # EP: Ma questa volta ci dà l'ID, non il valore dei casi
 
 # EP: Facciamo una carta finale con entrambi i plot
-# EP: Usiamo un multiframe
+# EP: Usiamo un multiframe («mfrow»)
 par(mfrow=c(2,1))
 # EP: densità:
 cl <- colorRampPalette(c('cyan', 'purple', 'red'))(100)
@@ -471,9 +481,9 @@ plot(coastlines, add=T)
 # EP: Chiudo il grafico
 dev.off()
 
-# San Marino, caso di studio
-# EP: Carico i dati esterni ("Tesi.RData") che ho scaricato da iol
-# EP: Serve libreria spatstat
+# San Marino, studio di caso
+# EP: Carico i dati esterni («Tesi.RData») che ho scaricato da iol
+# EP: Serve libreria «spatstat»
 # EP: library(spatstat)
 load("Tesi.RData")
 ls()
@@ -482,9 +492,9 @@ head(Tesi)
 # EP: Facciamo un attach della tabella per usarla con il point pattern
 attach(Tesi)
 
-# EP: Point pattern: x, y, c(xmin,xmax), c(ymin,ymax)
+# EP: Point pattern: x, y, c(xmin,xmax), c(ymin,ymax)    (N.B.!!!)
 # EP: Mettiamo anche i limiti per le due coordinate, trattandosi di un'area ristretta
-# EP: Uso funzione summary(dataset) per avere il sommario della tabella
+# EP: Uso funzione «summary(dataset)» per avere il sommario della tabella
 summary(Tesi)
 # EP: y(lat.) va da 43.91 a 43.94, y(lon.) da 12.42 a 12.46
 # EP: Ma noi lasciamo un po' di margine
@@ -503,33 +513,34 @@ setwd("/Users/enricopriarone/lab")
 load("Tesi.RData")
 ls()
 # EP: Ottengo i file presenti:
-# EP: "dT" è density map di Tesippp
-# EP: "Tesi" è un dataset
-# EP: "Tesippp" è il point pattern del file "Tesi" (da libreria "Spatstat")
+# EP: «dT» è density map di Tesippp
+# EP: «Tesi» è un dataset
+# EP: «Tesippp» è il point pattern del file "Tesi" (da libreria «spatstat»)
 
-# EP: Associamo i valori che vogliamo stimare
+# EP: Richiamo librerie e poi associo i valori che vogliamo stimare
+library(rgdal) 
 library(spatstat)
 plot(dT)
 points(Tesippp, col="green")
 
 # EP: Andiamo a stimare la ricchezza specifica
-# EP: Con "head" vedo che si trova sotto "Species_richness"
-# EP: "marks" va a prendere i valori dalla tabella e li associa ai punti del ppp
+# EP: Con «head» vedo che si trova sotto «Species_richness»
+# EP: «marks()» va a prendere i valori dalla tabella e li associa ai punti del ppp
 head(Tesi)
 marks(Tesippp) <- Tesi$Species_richness
 
-# EP: Creo mappa e l'associo a Smooth
+# EP: Creo mappa e l'associo a «Smooth»
 interpol <- Smooth(Tesippp)
 
 # EP: Usiamo file su San Marino
-# EP: Carico libreria "rgdal"
-library(rgdal)
+# EP: Carico libreria «rgdal»
+# EP: library(rgdal) [vedi inizio codice]
 sanmarino <- readOGR("San_Marino.shp")
 plot(sanmarino)
-plot(interpol, add=T) # EP: Importante! Con "T"/"True" aggiunge nuova mappa a quella precedente
+plot(interpol, add=T) # EP: Importante! Con «T»/«True» aggiunge nuova mappa a quella precedente
 points(Tesippp,col="green")
 # EP: Mappa va a sovrapporsi al territorio di San Marino
-plot(sanmarino, add=T) # Così i confini di Stato si sovrappongono al plot "interpol"
+plot(sanmarino, add=T) # EP: Così i confini di Stato si sovrappongono al plot «interpol»
 
 # Esercizio: plot multiframe di densità e interpolazione
 par(mfrow=c(2,1))
@@ -555,18 +566,18 @@ dev.off()
 
 ### 5. R_code_teleril.R
 
-# Codice R per analisi di immagini satellitari
+# Codice R per analisi di immagini satellitari (telerilevamento)
 
 # EP: Installo pacchetti che servono o li richiamo
-install.packages("RStoolbox") # EP: Verifica
+install.packages("RStoolbox") # EP: Verifica [?]
 library(raster)
-library(RStoolbox) # EP: Verifica
+library(RStoolbox) # EP: Verifica [?]
 
 # EP: Richiamo la setwd
 setwd("/Users/enricopriarone/lab")
 
-# EP: Uso p224r63_2011_masked.grd
-# EP: Associamo il file alla funzione "brick", per importare immagine satellitare con tutte le bande
+# EP: Uso «p224r63_2011_masked.grd»
+# EP: Associamo il file alla funzione «brick()», per importare immagine satellitare con tutte le bande
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
 # EP: Cerco informazioni sull'immagine attraverso grafici su bande, riflettanze ecc.
@@ -576,7 +587,7 @@ plot(p224r63_2011)
 # EP: 1) blu;
 # EP: 2) verde;
 # EP: 3) rosso;
-# EP: 4) NIR;
+# EP: 4) NIR (near infrared);
 # EP: 5) infr. medio; 
 # EP: 6) infr. termico;
 # EP: 7) infr. medio.
@@ -597,19 +608,18 @@ plot(p224r63_2011, col=cl)
 names(p224r63_2011) # EP: Visualizza le sette bande che sta usando
 
 # EP: Faccio una palette con la scala del blu
-# EP: attach(dataframe) non funziona con i raster
-# EP: allora per legare immagine a banda del blu uso simbolo che lega la colonna (banda) al dataset (immagine satellitare): "$"
+# EP: «attach(dataframe)» non funziona con i raster
+# EP: allora per legare immagine a banda del blu uso simbolo che lega la colonna (banda) al dataset (immagine satellitare): «$»
 clb <- colorRampPalette(c('dark blue','blue','light blue'))(100)
 plot(p224r63_2011$B1_sre, col=clb)
 # EP: parte bianca è mascherata: i pixel sono stati eliminati perché non servivano
 
-# Esercizio: plottare banda del NIR con:
-# EP: colorRampPalette che varia dal rosso all'arancione, al giallo
+# Esercizio: plottare banda del NIR con colorRampPalette che varia dal rosso all'arancione al giallo
 clnir <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(p224r63_2011$B4_sre, col=clnir)
 
 # EP: creo multiframe
-# EP: uso "par" per usare finestra a blocchi
+# EP: uso «par» per usare finestra a blocchi
 par(mfrow=c(2,2))
 
 # EP: Inizio col blu, poi verde ecc.
@@ -629,8 +639,8 @@ plot(p224r63_2011$B3_sre, col=clr) # EP: Sono bassi perché quasi tutto rosso è
 clnir <- colorRampPalette(c('red','orange','yellow'))(100)
 plot(p224r63_2011$B4_sre, col=clnir) # EP: Valori di NIR sono molto alti -> buona parte è foresta
 
-# EP: Montiamo le bande insieme per fare immagine come la vedrebbe l'occhio umano (con funz. "plotRGB")
-# EP: Usiamo le 3 componenti: R=banda del rosso G=verde B=blu (sono disponibili solo 3 bande tutte insieme)
+# EP: Montiamo le bande insieme per fare immagine come la vedrebbe l'occhio umano (con funz. «plotRGB»)
+# EP: Usiamo le 3 componenti: R=banda del rosso, G=verde, B=blu (sono disponibili solo 3 bande tutte insieme)
 # EP: Chiudiamo prima la finestra plottata
 dev.off()
 plotRGB(p224r63_2011, r=3, g=2, b=1)
@@ -642,11 +652,11 @@ plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
 # EP: Usiamo anche il NIR per distinguere ombre da piante
 # EP: Ma sono disponibili solo 3 bande alla volta: occorre eliminarne una
 # EP: Elimino la banda blu scalando tutto di uno: r=4, g=3, b=2 )
-# EP: È chiamata "432" o "false colours" ("falsi colori")
+# EP: È chiamata «432» o «false colours» («falsi colori»)
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 
 # EP: Salvo il grafico in PDF
-# EP: Per png: png"primografico.pdf")
+# EP: Per png: «png("primografico.pdf")»
 pdf("primografico.pdf")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 dev.off()
@@ -673,13 +683,13 @@ load(".RData")
 ls()
 
 # EP: Importo file del 1988 con tutte le bande
-# EP: "grd" sta per griglia: formato è di righe e colonne
+# EP: «grd» sta per griglia: formato è di righe e colonne
 p224r63_1988 <- brick("p224r63_1988_masked.grd")
 
 # EP: Facciamo un plot dell'immagine
 plot(p224r63_1988)
 
-# EP: Rifacciamo il lavoro dell'altra volta con l0immagine del 1988
+# EP: Rifacciamo il lavoro dell'altra volta con l'immagine del 1988
 par(mfrow=c(2,2))
 
 # EP: Inizio col blu, poi verde ecc.
@@ -709,11 +719,11 @@ plot(p224r63_1988$B4_sre, col=clnir) # EP: Valori di NIR sono molto alti -> buon
 # EP: B7: infr. medio.
 plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
 
-# Esercizio: fare plot dell'immagine usando il NIR nella componente "r"
+# Esercizio: fare plot dell'immagine usando il NIR nella componente «r»
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin") # EP: Già che ci sono sposto tutte le bande di 1: da 4-2-1 a 4-3-2
 
 # EP: Faccio plot delle due immagini (1988 e 2011)
-# EP: Devo fare un multipanel: funz. "par", con "mfrow"
+# EP: Devo fare un multipanel: funz. «par», con «mfrow»
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
@@ -725,7 +735,7 @@ dev.off()
 # EP: DVI=NIR-RED, e questo si fa pixel per pixel
 # EP: Indice spettrale DVI
 # EP: dvi_1988 = nir1988-red1988
-# EP: uso il $ per collegare le bande al dataset
+# EP: uso il «$» per collegare le bande al dataset
 dvi_1988 <- p224r63_1988$B4_sre - p224r63_1988$B3_sre
 plot(dvi_1988)
 
@@ -756,11 +766,11 @@ dev.off()
 
 # EP: Provo a cambiare la risoluzione delle immagini
 # EP: con pixel più grandi, dunque a risoluzione minore
-# EP: La riduco di n volte: se pixel è di 30 m, fact=10 mi dà nuovo pixel di 300 m
+# EP: La riduco di n volte: se pixel è di 30 m, «fact=10» mi dà nuovo pixel di 300 m
 p224r63_2011lr <- aggregate(p224r63_2011, fact=10)
 
 # EP: Guardo caratteristiche immagini
-# EP: imm. originale ha resolution 30x30
+# EP: imm. originale ha «resolution» 30x30
 # EP: nuova 300x300 e righe sono meno
 p224r63_2011
 p224r63_2011lr
@@ -782,13 +792,13 @@ dev.off()
 
 # EP: Faccio dvi a bassa risoluzione
 dvi_2011lr50 <- p224r63_2011lr50$B4_sre - p224r63_2011lr50$B3_sre
-plot(dvi_2011lr50) # Ma con questo perdo tantissimo e sembra tutto omogeneo
+plot(dvi_2011lr50) # EP: Ma con questo perdo tantissimo e sembra tutto omogeneo
 
 # EP: Faccio lo stesso per il 1988
 p224r63_1988lr50 <- aggregate(p224r63_1988, fact=50)
 dvi_1988lr50 <- p224r63_1988lr50$B4_sre - p224r63_1988lr50$B3_sre
 
-# EP: Faccio difdvi a bassa risoluzione
+# EP: Faccio «difdvi» a bassa risoluzione
 difdvilr50 <- dvi_2011lr50 - dvi_1988lr50
 cldifdvi <- colorRampPalette(c('red','white','blue'))(100)
 plot(difdvilr50,col=cldifdvi)
@@ -809,7 +819,7 @@ dev.off()
 
 ### 6. R_code_landcover.R
 
-# R code land cove
+# R code land cover
 
 setwd("/Users/enricopriarone/lab")
 load(".RData")
@@ -825,7 +835,7 @@ library(RStoolbox)
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 
 # EP: Accorpa i pixel in quattro classi:
-# EP: Ottengo un vero e proprio modello
+# EP: ottengo un vero e proprio modello
 p224r63_2011c <- unsuperClass(p224r63_2011, nClasses=4)
 
 # EP: Visualizzo le informazioni
@@ -865,7 +875,7 @@ library(raster)
 library(RStoolbox)
 library(ggplot2)
 
-# EP: Carichiamo immagine satellitare da cartella "lab" attraverso funzione di raster "brick"
+# EP: Carichiamo immagine satellitare da cartella «lab» attraverso funzione di raster «brick»
 defor1 <- brick("defor1_.jpg")
 defor2 <- brick("defor2_.jpg")
 
@@ -947,7 +957,7 @@ dev.off()
 
 # 05/05
 setwd("/Users/enricopriarone/lab")
-load("defor.RData") # EP: Uso questo perché il mio ".RData" mi dà errore: i dati saranno un po' diversi
+load("defor.RData") # EP: Uso questo perché il mio «.RData» mi dà errore: i dati saranno un po' diversi
 ls()
 library(raster)
 library(ggplot2)
@@ -960,18 +970,18 @@ plot(d1c$map, col=cl)
 plot(d2c$map, col=cl)
 output
 
-# EP: Creo grafico con percentuale di foresta/agricoltura prima della deforestazione ("before")
+# EP: Creo grafico con percentuale di foresta/agricoltura prima della deforestazione («before»)
 ggplot(output, aes(x=cover, y=before, color=cover)) +
 geom_bar(stat="identity", fill="white")
 # EP: agricoltura occupa percentuale molto bassa: ca. 10%; contro il ca. 90% della foresta
 
-# Esercizio: faccio lo stesso per il dopo deforestazione ("after")
+# Esercizio: faccio lo stesso per il dopo deforestazione («after»)
 ggplot(output, aes(x=cover, y=after, color=cover)) +
 geom_bar(stat="identity", fill="white")
 # EP: agricoltura è vicina al 50%; foresta lo supera appena
 
-# EP: Usiamo funzione "par"
-# EP: Necessita del pacchetto "gridExtra", che installiamo
+# EP: Usiamo funzione «par»
+# EP: Necessita del pacchetto «gridExtra», che installiamo [vedi inizio codice 05/05]
 # EP: Facciamo istogramma delle percentuali associando prima i due grafici a un nome
 grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) +
 geom_bar(stat="identity", fill="white")
@@ -979,10 +989,10 @@ geom_bar(stat="identity", fill="white")
 grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) +
 geom_bar(stat="identity", fill="white")
 
-# Esercizio: usare "grid.arrange" per graficizzarli
+# Esercizio: usare «grid.arrange» per graficizzarli
 grid.arrange(grafico1, grafico2, nrow=1)
 
-# EP: Manca da cambiare la y! Vedi poi "iol"
+# EP: Manca da cambiare la y! Vedi poi «iol»
 
 dev.off()
 
@@ -1002,8 +1012,8 @@ geom_bar(stat="identity", fill="white")
 
 grid.arrange(grafico1, grafico2, nrow = 1)
 
-# EP: "ylim" funziona con "ggplot" e permette di inserire in limite all'ordinata
-# EP: Prendere libro "ggplot2. Elegant graphics..." di Whickam!
+# EP: «ylim» funziona con «ggplot» e permette di inserire in limite all'ordinata
+# EP: Prendere libro «ggplot2. Elegant graphics...» di Whickam!
 grafico1 <- ggplot(output, aes(x=cover, y=before, color=cover)) + 
 geom_bar(stat="identity", fill="white") +
 ylim(0, 100)
@@ -1012,7 +1022,7 @@ grafico2 <- ggplot(output, aes(x=cover, y=after, color=cover)) +
 geom_bar(stat="identity", fill="white") +
 ylim(0, 100)
 
-# Esercizio: usa grid.arrange graficizzare
+# Esercizio: usa «grid.arrange» graficizzare
 grid.arrange(grafico1, grafico2, nrow = 1)
 # EP: Così scala nelle ordinate (y) è la stessa
 
@@ -1032,8 +1042,8 @@ setwd("/Users/enricopriarone/lab")
 library(raster)
 
 # EP: Visualizzo immagini scaricate
-EN01 <- raster("EN_0001.png") # EP: Lo "0" prima è importante perché R non li riconosce come numeri, ma come stringhe:
-plot(EN01)                    # EP: altrimenti la successiva sarebbe stata "EN10" e non "EN2"
+EN01 <- raster("EN_0001.png") # EP: Lo «0» prima è importante perché R non li riconosce come numeri, ma come stringhe:
+plot(EN01)                    # EP: altrimenti la successiva sarebbe stata «EN10» e non «EN2»
 
 # Esercizio: caricare (e graficizzare) tutte le altre immagini
 EN02 <- raster("EN_0002.png")
@@ -1060,7 +1070,7 @@ EN12 <- raster("EN_0012.png")
 plot(EN12)
 EN13 <- raster("EN_0013.png")
 plot(EN13)
-# EP: In alternativa uso un ciclo "for": guardare in codice su "iol"!
+# EP: In alternativa uso un ciclo «for»: guardare in codice su «iol»!
 
 ls()
 
@@ -1077,7 +1087,7 @@ cldif <- colorRampPalette(c('blue','black','yellow'))(100) #
 plot(difno2, col=cldif)
 dev.off()
 
-# Esercizio: faccio grafico di tutte le immagini con un "par"
+# Esercizio: faccio grafico di tutte le immagini con un «par»
 par(mfrow=c(4,4))
 plot(EN01, col=cl)
 plot(EN02, col=cl)
@@ -1092,7 +1102,7 @@ plot(EN10, col=cl)
 plot(EN11, col=cl)
 plot(EN12, col=cl)
 plot(EN13, col=cl)
-# EP: Domani proviamo col "for"
+# EP: Domani proviamo col «for»
 
 dev.off()
 
@@ -1101,17 +1111,17 @@ dev.off()
 setwd("/Users/enricopriarone/lab/esa_no2")
 library(raster)
 
-# EP: creo una lista di pattern, di cui diciamo che sono nominati ".png"
+# EP: creo una lista di pattern, di cui diciamo che sono nominati «.png»
 rlist <- list.files(pattern=".png")
 rlist
 
-# EP: usiamo funzioni "raster" (non "brick", perché carica l'intero pacchetto layer satellitare: a noi ne serve uno solo)
-# EP: e "lapply"
+# EP: usiamo funzioni «raster» (non «brick», perché carica l'intero pacchetto layer satellitare: a noi ne serve uno solo)
+# EP: e «lapply()»
 listafinale <- lapply(rlist, raster)
 listafinale
 # EP: sono 13 RasterLayer
 
-# EP: usiamo funzione "stack" per creare un pacchetto unico di dati: creiamo un'unica immagine
+# EP: usiamo funzione «stack» per creare un pacchetto unico di dati: creiamo un'unica immagine
 EN <- stack(listafinale)
 EN
 
@@ -1157,7 +1167,7 @@ dev.off()
 ### 9. R_code_snow.r
 
 # Analisi copertura nevosa con dati Copernicus
-# https://land.copernicus.vgt.vito.be/PDF/portal/Application.html
+# <https://land.copernicus.vgt.vito.be/PDF/portal/Application.html>
 
 setwd("/Users/enricopriarone/lab")
 install.packages("ncdf4")
@@ -1234,7 +1244,7 @@ plot(d2c,col=cl)
 
 # EP: Eliminiamo tutti i valori di agricoltura, inserendoli come valori nulli («not assigned»)
 # EP: Usiamo funzione «reclassify»
-d1c.for <- reclassify(d1c, cbind(1,NA)) # «d1c.for» di solito è nome da modello; in alternativa «d1c_for»
+d1c.for <- reclassify(d1c, cbind(1,NA)) # EP: «d1c.for» di solito è nome da modello; in alternativa «d1c_for»
 
 par(mfrow=c(1,2))
 cl <- colorRampPalette(c('black','green'))(100)
@@ -1271,8 +1281,8 @@ plot(d1c.for.patches, col=clp)
 plot(d2c.for.patches, col=clp)
 
 # EP: Definiamo quante patch sono state create
-d1c.for.patches # Ha 301 patches
-d2c.for.patches # Ha 1212 patches
+d1c.for.patches # EP: Ha 301 patches
+d2c.for.patches # EP: Ha 1212 patches
 
 # EP: Creiamo un frame
 time <- c("1. Before deforestation","2. After deforestation")
@@ -1305,12 +1315,12 @@ library(raster)
 rlist <- list.files(pattern="snow2")
 rlist
 
-# EP: uso funzioni "raster" e "lapply"
+# EP: uso funzioni «raster» e «lapply»
 listasnow <- lapply(rlist, raster)
 listasnow
 # EP: 6 RasterLayer
 
-# EP: uso funzione "stack" per creare un pacchetto unico di dati: creiamo un'unica immagine
+# EP: uso funzione «stack» per creare un pacchetto unico di dati: creiamo un'unica immagine
 snow.multitemp <- stack(listasnow)
 snow.multitemp
 
@@ -1334,7 +1344,7 @@ extension <- c(6, 20, 35, 50)
 snow2010r.italy <- crop(snow.multitemp$snow2010r, extension)
 plot(snow2010r.italy, col=clb)
 
-# Esercizio: applichiamo la funzione «crop» su tutte le immagini, ossia su più livelli
+# Esercizio: applichiamo la funzione «crop()» su tutte le immagini, ossia su più livelli
 snow.multitemp.italy <- crop(snow.multitemp, extension)
 snow.multitemp.italy  # EP: Da qui prendo valori max e min per scala
 plot(snow.multitemp.italy, col=clb, zlim=c(20,200))
@@ -1343,7 +1353,7 @@ plot(snow.multitemp.italy, col=clb, zlim=c(20,200))
 # EP: Facciamo boxplot (ma volendo anche regressione, previsione con «prediction» ecc.)
 boxplot(snow.multitemp.italy, horizontal=T,outline=F)
 
-# EP: Vedere file caricato  su iol («prediction.r»?) e nel caso contattare il prof
+# EP: Vedere file caricato su iol («prediction.r»?) e nel caso contattare il prof
 
 dev.off()
 
