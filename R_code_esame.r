@@ -29,54 +29,57 @@
 library(sp)
 # EP: in alternativa require(sp)
 
+# EP: Funzione utile a visualizzare i data set; in questo caso il data set «meuse»
 data(meuse)
-meuse
+meuse # EP: relativa a presenza in superficie di quattro metalli pesanti nei pressi del fiume Meuse (Mosa)
 
 # EP: head(meuse) visualizza solo le prime sei righe
+# EP: names(meuse) visualizza solo i nomi
 head(meuse)
 names(meuse)
 
-# EP: dà sommario del dataset:
+# EP: dà sommario (informazioni ulteriori) del dataset:
 summary(meuse)
 
-# EP: mostra grafico di correlazione tra variabili in ballo:
+# EP: mostra grafico di correlazione tra variabili in ballo (dalla matrice di correlazione):
 pairs(meuse)
 
 # EP: permette di visualizzare solo le variabili di nostro interesse
-# EP: occorre fare la tilde "~", che significa "="
+# EP: occorre fare la tilde «~», che significa «=»
 # EP: virgola è separatore di argomenti a funzione
+# EP: con «data» seleziono il data set che mi interessa
 pairs(~ cadmium + copper + lead , data = meuse)
 
 # EP: in R si possono richiamare funzioni precedenti: freccia in alto e la premo quante volte mi serve
-# EP: lo uso per richiamare "names(meuse)"
+# EP: lo uso per richiamare «names(meuse)»
 # Esercizio: rifaccio pairs mettendo cadmium, copper, lead e zinc
 pairs(~ cadmium + copper + lead + zinc , data = meuse)
 
-# EP: permette di ridurre i passaggi (richiamo "names" ecc.) e inserire subito variabili che ci interessano attr. colonne
-# EP: in questo caso prendo un subset ("[]") partendo da (",") colonna 3 a colonna 6 (":")
+# EP: permette di ridurre i passaggi (richiamo «names» ecc.) e inserire subito variabili che ci interessano attr. colonne
+# EP: in questo caso prendo un subset («[]») partendo da («,») colonna 3 a colonna 6 («:»)
 # EP: ci dà grafico uguale a prima
 pairs(meuse[,3:6])
 
-# EP: per cambiare colore funzioni: "col="red" " o altri colori
+# EP: per cambiare colore funzioni: «col="red"» o altri colori
 pairs(meuse[,3:6], col="blue")
 
-# EP: per cambiare tipo di caratteri uso "point character"
-# EP: ne esistono vari tipi: su "Google immagini" ci sono figure e numeri relativi
+# EP: per cambiare tipo di caratteri uso «point character» («pch»)
+# EP: ne esistono vari tipi: su 'Google immagini' ci sono figure e numeri relativi
 pairs(meuse[,3:6], col="blue", pch=20)
 
-# EP: per cambiare dimensione punti uso argomento a funzione "character exageration"
+# EP: per cambiare dimensione punti uso argomento a funzione «character exageration» («cex»)
 # EP: se cex=1 non cambia nulla, con 10 è 10 volte più grande, con 0.5 diminuisce della metà
 pairs(meuse[,3:6], col="blue", pch=20, cex=3)
 
-# EP: do titolo a grafico: "main="
+# EP: do titolo a grafico: «main=»
 pairs(meuse[,3:6], col="blue", pch=20, cex=3, main="Primo pairs")
 
-# Esercizio: inserire anche "elevation" tra le variabili, che è la settima
+# Esercizio: inserire anche «elevation» tra le variabili, che è la settima
 pairs(meuse[,3:7], col="blue", pch=20, cex=3, main="Primo pairs")
 
 # EP: source permette di prendere file dall'esterno
 # EP: ora facciamo copia-incolla
-panel.correlations <- function(x, y, digits=1, prefix="", cex.cor)
+panel.correlations <- function(x, y, digits=1, prefix="", cex.cor) # EP: «correlations» ci dà le correlazioni
 {
     usr <- par("usr"); on.exit(par(usr))
     par(usr = c(0, 1, 0, 1))
@@ -90,17 +93,17 @@ panel.correlations <- function(x, y, digits=1, prefix="", cex.cor)
     text(0.5, 0.5, txt, cex = cex * r)
 }
 
-panel.smoothing <- function (x, y, col = par("col"), bg = NA, pch = par("pch"),
+panel.smoothing <- function (x, y, col = par("col"), bg = NA, pch = par("pch"), # EP: «smoothing» ci dà linea di correlazione
     cex = 1, col.smooth = "red", span = 2/3, iter = 3, ...)
 {
     points(x, y, pch = pch, col = col, bg = bg, cex = cex)
     ok <- is.finite(x) & is.finite(y)
     if (any(ok))
-        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter),
+        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), # EP: «lowess» è smooter locale: uso linea per mostrare relazione tra variabili
             col = 1, ...)
 }
 
-panel.histograms <- function(x, ...)
+panel.histograms <- function(x, ...) # EP: «histograms» fa istogramma delle variabili
 {
     usr <- par("usr"); on.exit(par(usr))
     par(usr = c(usr[1:2], 0, 1.5) )
@@ -109,12 +112,10 @@ panel.histograms <- function(x, ...)
     y <- h$counts; y <- y/max(y)
     rect(breaks[-nB], 0, breaks[-1], y, col="white", ...)
 }
-# EP: "lowess" è smooter locale: uso linea per mostrare relazione tra variabili
-# EP: "histograms" fa istogramma variabili
 
-# EP: "lower.panel" è parte inferiore del grafico pairs e decido cosa metterci, ad es. le correlazioni
-# EP: "upper.panel" è parte superiore e ci metto lo smoothing, ossia il grafico dei punti con le linee di correlazione
-# EP: "diag.panel" è diagonale e ci metto gli istogrammi
+# EP: «lower.panel» è parte inferiore del grafico pairs e decido cosa metterci, ad es. le correlazioni
+# EP: «upper.panel» è parte superiore e ci metto lo smoothing, ossia il grafico dei punti con le linee di correlazione
+# EP: «diag.panel» è diagonale e ci metto gli istogrammi
 pairs(meuse[,3:6], lower.panel = panel.correlations, upper.panel = panel.smoothing, diag.panel = panel.histograms)
 
 # Esercizio: in pairs metto lower panel smoothing, diagonal istogrammi e upper correlations
@@ -123,20 +124,22 @@ pairs(meuse[,3:6], lower.panel = panel.smoothing, upper.panel = panel.correlatio
 plot(meuse$cadmium, meuse$copper)
 # EP: mi dà errore
 
-# EP: uso questa funzione per evitare di usare "$" e di richiamare "meuse"
+# EP: uso questa funzione per evitare di usare «$» e di richiamare «meuse»
+# EP: serve per costruire grafico solo con variabili cadmium e copper
 attach(meuse)
 plot(cadmium, copper)
 
 # EP: Cambio il tipo di punto utilizzato, colore e titolo
 plot(cadmium, copper, pch=19)
 plot(cadmium, copper, pch=19, col="green", main="Primo plot")
-# EP: con "yellow" non si vede nulla: bocciato
+# EP: con «yellow» non si vede nulla: bocciato
 
 # EP: voglio cambiare le lables, le etichette
+# EP: «xlab» è variabile 1, «ylab» è la var. 2
 plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", ylab="rame")
 
-# EP: argomento che esagera i caratteri delle lables
-# EP: e cambio punti
+# EP: argomento che esagera i caratteri delle lables (es. «cex.lab=1.5»)
+# EP: e cambio punti (con «cex»!)
 plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", ylab="rame", cex.lab=1.5, cex=2)
 
 
@@ -149,17 +152,23 @@ plot(cadmium, copper, pch=19, col="green", main="Primo plot", xlab="cadmio", yla
 
 # R spatial: funzioni spaziali
 
-# EP: richiamo pacchetto "sp"
+# EP: richiamo pacchetto «sp»
 library(sp)
 
-# EP: dati pacchetto: "meuse"
+# EP: pacchetto utile, un multiframe automatico: «GGally»
+# EP: lo installo e lo richiamo
+install.packages("GGally")
+library(GGally)
+
+# EP: dati pacchetto: «meuse»
 data(meuse)
 head(meuse)
 
 # EP: plot cadmium e lead
-# EP: per fare i plot occorre innanzitutto allegare il database (o dataframe)
+# EP: per fare i plot occorre innanzitutto allegare il database (o dataframe): uso funzione «attach»
 attach(meuse)
 plot(cadmium, lead, col="pink", pch=8, cex=2)
+# funzione «plot» serve per rappresentazione grafica
 
 # Esercizio: plot di copper e zinc con simbolo triangolo (17) e colore verde
 plot(copper, zinc, col="green", pch=17, cex=2)
@@ -168,12 +177,12 @@ plot(copper, zinc, col="green", pch=17, cex=2)
 plot(copper, zinc, col="green", pch=17, cex=2, xlab="rame", ylab="zinco", cex.lab=1.5)
 
 # EP: creo un pannello che contenga più grafici:
-# EP: funzione "multiframe" (o "multipanel") è IMPORTANTISSIMA!
-# EP: "par" ha come argomenti i multiframe relativi a righe e colonne (row)
-# EP: "c" permette di inserire il numero di righe e colonne che vogliamo
+# EP: funzione per multiframe (o multipanel) è IMPORTANTISSIMA!
+# EP: è la funzione «par», che ha come argomenti i multiframe relativi a righe e colonne (row)
+# EP: «c» permette di inserire il numero di righe e colonne che vogliamo
 # EP: inserisco i due grafici che ho fatto
 # EP: metto in R le tre righe insieme!
-par(mfrow=c(1,2))
+par(mfrow=c(1,2)) # EP: par(mfrow=c(numero righe, numero colonne))
 plot(cadmium, lead, col="pink", pch=8, cex=2, xlab="cadmio", ylab="piombo", cex.lab=1.5)
 plot(copper, zinc, col="green", pch=17, cex=2, xlab="rame", ylab="zinco", cex.lab=1.5)
 
@@ -183,34 +192,37 @@ par(mfrow=c(2,1))
 plot(cadmium, lead, col="pink", pch=8, cex=2, xlab="cadmio", ylab="piombo", cex.lab=1.5)
 plot(copper, zinc, col="green", pch=17, cex=2, xlab="rame", ylab="zinco", cex.lab=1.5)
 
-# EP: c'è pacchetto utile, un multiframe automatico: "GGally"
+# EP: c'è pacchetto utile, un multiframe automatico: «GGally» (!!!)
 # EP: lo installo e lo richiamo
-install.packages("GGally")
-library(GGally)
+# EP: install.packages("GGally")
+# EP: library(GGally)
+# EP: [vedi inizio codice]
 
 # EP: faccio multipannello con tante variabili
-# EP: uso una funzione interna a GGally
+# EP: uso una funzione interna a «GGally»
 # EP: scelgo un subset (un pezzettino), perché altrimenti è troppo grande:
 # EP: seleziono solo le prime quattro colonne, relative agli elementi (dalla terza alla sesta)
-# EP: "3:6" si può anche scrivere "3-6"
+# EP: «3:6» si può anche scrivere «3-6»
 ggpairs(meuse[,3:6])
+# EP: # EP: funzione «ggpairs» costruisce matrice di grafici da un data set
 
 # EP: ci dà un grafico con distribuzione di frequenza dati
 # EP: mette plot variabili: piombo rispetto alle altre ecc.
 # EP: probabilmente usa coefficiente di Spearman, ossia coeff. varia da -1 a 1
 # EP: 1: correlate in maniera positiva; -1: corr. negativamente; 0: non correlate
-# EP: per vedere come funzione è scritta basta digitarla e premere invio
+# EP: per vedere come funzione è scritta basta digitarla e premere invio:
+# EP: ggpairs
 
-# EP: facciamo parte spaziale (!!)
-# EP: per prima cosa dobbiamo dirgli che "meuse" ha coordinate: "x" e "y"
-# EP: la funzione usa "=" per fare l'associazione
+# EP: facciamo parte spaziale (!!!)
+# EP: per prima cosa dobbiamo dirgli che «meuse» ha coordinate: «x» e «y»
+# EP: la funzione usa «=» per fare l'associazione
 head(meuse)
 coordinates(meuse)=~x+y
 
-# EP: mettiamo funzione "plot" e ottengo distribuzione nello spazio dei nostri dati
+# EP: mettio funzione «plot» e ottengo distribuzione nello spazio dei nostri dati
 plot(meuse)
 
-# EP: metto grafico all'interno di "sp"
+# EP: metto grafico all'interno di «sp»
 # EP: variabili vanno scritte tra virgolette, perché fa link dall'esterno
 spplot(meuse, "zinc")
 
@@ -1165,7 +1177,7 @@ setwd("/Users/enricopriarone/lab/snow")
 rlist = list.files(pattern=".tif", full.names=T)
 
 # EP: Salvo raster in una lista
-# EP: con «lappy»
+# EP: con «lapply»
 list_rast = lapply(rlist, raster)
 snow.multitemp <- stack(list_rast)
 plot(snow.multitemp, col=cl)
