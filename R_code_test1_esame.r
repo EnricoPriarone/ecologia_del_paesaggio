@@ -41,11 +41,11 @@ clg <- colorRampPalette(c('white','green','dark green'))(100)
 
 # Faccio un ritaglio per selezionare Italia, Spagna e Francia
 extension <- c(-10, 20, 35, 52)
-agric.isf <- crop(agric, extension)
+agric.gab <- crop(agric, extension)
 
 # Ho provato a ridurre la risoluzione dei pixel, ma è totalmente inutile: già sono grandi di per sé
-# agric.isf.hr <- aggregate(agric.isf, fact=0.5)
-# plot(agric.isf.hr, main="Terre coltivate in Italia, Spagna e Francia", col=clg)
+# agric.gab.hr <- aggregate(agric.gab, fact=0.5)
+# plot(agric.gab.hr, main="Terre coltivate in Gabon", col=clg)
 
 # Carico l'immagine Copernicus relativa al NDVI (Normalized Difference Vegetation Index)
 # [Dare informazioni su immagine e pixel]
@@ -59,12 +59,12 @@ cln <- colorRampPalette(c('light blue','light green','green'))(100)
 
 # Faccio un ritaglio per selezionare Italia, Spagna e Francia
 # extension <- c(-10, 20, 35, 52)
-ndvi_2000.isf <- crop(ndvi_2000, extension)
+ndvi_2000.gab <- crop(ndvi_2000, extension)
 
 # Graficizzo le due immagini ritagliate
 par(mfrow=c(1,2))
-plot(agric.isf, main="Terre coltivate in Italia, Spagna e Francia (2000)", col=clg)
-plot(ndvi_2000.isf, main="NDVI in Italia, Spagna e Francia (2000)")
+plot(agric.gab, main="Terre coltivate in Gabon (2000)", col=clg)
+plot(ndvi_2000.gab, main="NDVI in Gabon (2000)")
 # Ottengo un grafico che mi permette di notare una sovrapposizione tra i dati:
 # [Mettere spiegazioni]
 
@@ -97,17 +97,17 @@ plot(ndvi300)
 
 # Ritaglio le immagini
 ext <- c(11, 15, -4, -1)
-ndvi1000.isf <- crop(ndvi1000, ext)
-ndvi300.isf <- crop(ndvi300, ext)
-plot(ndvi1000.isf, main="NDVI in Italia, Spagna e Francia (2000, 2005, 2010)", col=clg)
-plot(ndvi300.isf, main="NDVI in Italia, Spagna e Francia (2015, 2020)", col=clg)
+ndvi1000.gab <- crop(ndvi1000, ext)
+ndvi300.gab <- crop(ndvi300, ext)
+plot(ndvi1000.gab, main="NDVI in Gabon (2000, 2005, 2010)", col=clg)
+plot(ndvi300.gab, main="NDVI in Gabon (2015, 2020)", col=clg)
 
 # Inserisco immagine LAI
 lai2015 <- raster("c_gls_LAI300_201601310000_GLOBE_PROBAV_V1.0.1.nc")
 #plot(lai2015)
 
-lai2015.isf <- crop(lai2015, ext)
-plot(lai2015.isf, col=clg)
+lai2015.gab <- crop(lai2015, ext)
+plot(lai2015.gab, col=clg)
 
 dev.off()
 
