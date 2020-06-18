@@ -15,6 +15,7 @@
 # 10. R_code_patches.r  
 # 11. R_code_crop.r
 # 12. R_code_sdm.r
+# Esame: R_code_ .r
 
 
 ###################################################################################################
@@ -1428,7 +1429,7 @@ dev.off()
 ###################################################################################################
 
 
-### Codice esame
+### Progetto esame
 ### R_code_ .r
 
 # «The Soil Water Index quantifies the moisture condition at various depths in the soil.
