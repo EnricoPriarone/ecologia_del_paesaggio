@@ -149,6 +149,27 @@ lai2015 <- raster("c_gls_LAI300_201601310000_GLOBE_PROBAV_V1.0.1.nc")
 lai2015.gab <- crop(lai2015, ext)
 plot(lai2015.gab, col=clg)
 
+
+### Terza parte
+
+#Tento la previsione
+# Non gira!!!
+
+est <- c(-180, 180, -90, 90)
+extens <- crop(ndvi300, est)
+    
+# make a time variable (to be used in regression)
+time <- 1:nlayers(ndvi300)
+
+# run the regression
+fun <- function(x) {if (is.na(x[1])){ NA } else {lm(x ~ time)$coefficients[2] }} 
+predicted.ndvi.2025 <- calc(extens, fun) # time consuming: make a pause!
+# Qui si blocca
+predicted.ndvi.2025.norm <- predicted.ndvi.2025*255/53.90828
+
+
+
+
 dev.off()
 
 
