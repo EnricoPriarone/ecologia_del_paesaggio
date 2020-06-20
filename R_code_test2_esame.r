@@ -28,28 +28,31 @@ library(rgdal)
 # Faccio il set della working directory
 setwd("/Users/enricopriarone/lab/esame")
 
+# Carico le immagini singolarmente perché con «lapply» non riesco a lavorare sulle singole immagini
 swi2015r <- raster("c_gls_SWI_201511071200_GLOBE_ASCAT_V3.1.1.nc")
 swi2016r <- raster("c_gls_SWI_201611071200_GLOBE_ASCAT_V3.1.1.nc")
 swi2017r <- raster("c_gls_SWI_201711071200_GLOBE_ASCAT_V3.1.1.nc")
 swi2018r <- raster("c_gls_SWI_201811071200_GLOBE_ASCAT_V3.1.1.nc")
 swi2019r <- raster("c_gls_SWI_201911071200_GLOBE_ASCAT_V3.1.1.nc")
-plot(swi2015r)
-plot(swi2016r)
-plot(swi2017r)
-plot(swi2018r)
-plot(swi2019r)
+# Faccio qualche plot di verifica
+# plot(swi2015r)
+# plot(swi2016r)
+# plot(swi2017r)
+# plot(swi2018r)
+# plot(swi2019r)
 
+# Ritaglio tutte le immagini imponendo come estensione quella dell'  e faccio plot di verifica
 extension <- c(21, 43, 44, 54)
 swi2015r.ucr <- crop(swi2015r, extension)
-plot(swi2015r.ucr)
+# plot(swi2015r.ucr)
 swi2016r.ucr <- crop(swi2016r, extension)
-plot(swi2016r.ucr)
+# plot(swi2016r.ucr)
 swi2017r.ucr <- crop(swi2017r, extension)
-plot(swi2017r.ucr)
+# plot(swi2017r.ucr)
 swi2018r.ucr <- crop(swi2018r, extension)
-plot(swi2018r.ucr)
+# plot(swi2018r.ucr)
 swi2019r.ucr <- crop(swi2019r, extension)
-plot(swi2019r.ucr)
+# plot(swi2019r.ucr)
 
 # Carico l'immagine NASA relativa a terreni agricoli
 # «The downloaded grid values represent the proportion of pixel are that is either under cropland or pasture.
@@ -65,7 +68,7 @@ clg <- colorRampPalette(c('dark green','green','white'))(100)
 # cl in scala di grigi
 
 # Faccio un ritaglio per selezionare l'Ucraina
-extension <- c(21, 43, 44, 54)
+# extension <- c(21, 43, 44, 54)
 agric.ucr <- crop(agric, extension)
 plot(agric.ucr)
 
@@ -75,16 +78,20 @@ plot(admin, add=T)
 
 # Ne faccio un ritaglio
 admin.ucr <- crop(admin, extension)
+# plot(admin.ucr)
 
+# Plotto immagine Nasa e immagine Copernicus 2015 insieme
 par(mfrow=c(1,2))
 plot(swi2015r.ucr)
-plot(admin, add=T)
+plot(admin.ucr, add=T)
 plot(agric.ucr)
-plot(admin, add=T)
+plot(admin.ucr, add=T)
 
+# Cerco valori max e min delle immagini Copernicus del 2015 e del 2019
 swi2015r.ucr # 3.5 --> 75.5
 swi2019r.ucr # 4.5 --> 92.5
 
+# Graficizzo le due immagini e via via faccio confronti tra i vari anni
 cla <- colorRampPalette(c('light blue','yellow','red'))(100)
 par(mfrow=c(1,2))
 plot(swi2015r.ucr, zlim=c(0,100), col=cla)
@@ -119,7 +126,7 @@ plot(admin.ucr, add=T)
 '''
 
 
-# Usa unsuperClass
+# Prova unsuperClass per i modelli
 
 
 # Carico le immagini Copernicus, tutte insieme
@@ -129,7 +136,7 @@ nclist <- list.files(pattern=".nc")
 nclist # Così vedo l'elenco delle immagini incluse
 
 # Uso funzioni «raster» e «lapply»
-listafinale <- lapply(nclist, brick)
+listafinale <- lapply(nclist, raster)
 listafinale # Vedo i cinque RasterLayer
 
 # Uso funzione «stack» per creare un pacchetto unico di dati: un'unica immagine
@@ -141,22 +148,26 @@ plot(swi_12.5km)
 
 # Ritaglio le immagini
 swi_12.5km_ucr <- crop(swi_12.5km, extension)
-swi_12.5km_ucr # Richiamando il set vedo che valori variano tra 0 e 252: li metto come limiti con «zlim»
+swi_12.5km_ucr # Richiamando il set vedo che valori variano circa tra 0 e 100: li metto come limiti con «zlim»
 # cla <- colorRampPalette(c('brown','yellow','dark blue'))(200)
 plot(swi_12.5km_ucr, col=cla, main="Soil Water Index in Ucraina (2015-2019)", zlim=c(0,100))
-plotRGB(swi_12.5km_ucr, col=cla, main="Soil Water Index in Ucraina (2015-2019)", zlim=c(0,100), stretch=Lin)
+
+# Provo mappa in RGB
+plotRGB(swi_12.5km_ucr, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin") # Non prende «main»
 plot(admin.ucr, add=T)
 
-# Visualizzo solo un'immagine
-plot(swi2015r, col=cla, zlim=c(0,100))
-plot(admin, add=T)
+# Faccio differenza tra immagine 2015 e imm. 2019 e la graficizzo in scala di grigi
+clgg <- colorRampPalette(c('black','grey','red'))(100)
+par(mfrow=c(1,3))
+plot(swi2019r.ucr, zlim=c(0,100))
+plot(swi2015r.ucr, zlim=c(0,100))
+plot(difimm, col=clgg)
+
+# Le graficizzo insieme
+par(mfrow=c(2,1))
+plotRGB(swi_12.5km_ucr, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin", main="Soil Water Index in Ucraina (2015-2019)")
+plot(difimm, col=clgg)
 
 
-admin.ec <- crop(admin, ext)
-par(mfrow=c(1,2))
-plot(ecuador2014)
-plot(admin.ec, add=T)
-plot(ecuador2020)
-plot(admin.ec, add=T)
 
 dev.off()
