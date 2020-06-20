@@ -1,7 +1,7 @@
 ### Codice esame
 # Ho scaricato dati Copernicus relativi al Surface Soil Moisture, ossia l'indice di idratazione dei suoli.
 # Può essere utile anche in agricoltura. [Aggiungi roba]
-# Albergel et al., 2008   Wagner et al., 1999
+# Albergel et al., 2008 + Wagner et al., 1999
 # Comparerò i dati riferiti a 6-7 novembre di cinque anni diversi (dal 2015 al 2019), per osservare eventuali cambiamenti.
 # Proverò a vedere se ci sono eventuali correlazioni con i dati NDVI che ho già scaricato.
 # In caso affermativo proverò a fare una valutazione usando l'immagine NASA del 2000 relativa alle terre coltivate.
@@ -42,6 +42,12 @@ plot(swi2019r)
 extension <- c(21, 43, 44, 54)
 swi2015r.ucr <- crop(swi2015r, extension)
 plot(swi2015r.ucr)
+swi2016r.ucr <- crop(swi2016r, extension)
+plot(swi2016r.ucr)
+swi2017r.ucr <- crop(swi2017r, extension)
+plot(swi2017r.ucr)
+swi2018r.ucr <- crop(swi2018r, extension)
+plot(swi2018r.ucr)
 swi2019r.ucr <- crop(swi2019r, extension)
 plot(swi2019r.ucr)
 
@@ -63,6 +69,13 @@ extension <- c(21, 43, 44, 54)
 agric.ucr <- crop(agric, extension)
 plot(agric.ucr)
 
+# Aggiungo confini di Stato per inquadrare meglio l'Ucraina
+admin <- readOGR("ne_10m_admin_0_countries.shp")
+plot(admin, add=T)
+
+# Ne faccio un ritaglio
+admin.ucr <- crop(admin, extension)
+
 par(mfrow=c(1,2))
 plot(swi2015r.ucr)
 plot(admin, add=T)
@@ -75,14 +88,39 @@ swi2019r.ucr # 4.5 --> 92.5
 cla <- colorRampPalette(c('light blue','yellow','red'))(100)
 par(mfrow=c(1,2))
 plot(swi2015r.ucr, zlim=c(0,100), col=cla)
-plot(admin, add=T)
+plot(admin.ucr, add=T)
 plot(swi2019r.ucr, zlim=c(0,100), col=cla)
-plot(admin, add=T)
+plot(admin.ucr, add=T)
+
+'''
+par(mfrow=c(1,2))
+plot(swi2015r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+plot(swi2016r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+
+par(mfrow=c(1,2))
+plot(swi2016r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+plot(swi2017r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+
+par(mfrow=c(1,2))
+plot(swi2017r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+plot(swi2018r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+
+par(mfrow=c(1,2))
+plot(swi2018r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+plot(swi2019r.ucr, zlim=c(0,100), col=cla)
+plot(admin.ucr, add=T)
+'''
 
 
-# Aggiungo confini di Stato per inquadrare meglio l'Ucraina
-admin <- readOGR("ne_10m_admin_0_countries.shp")
-plot(admin, add=T)
+# Usa unsuperClass
+
 
 # Carico le immagini Copernicus, tutte insieme
 
@@ -105,28 +143,20 @@ plot(swi_12.5km)
 swi_12.5km_ucr <- crop(swi_12.5km, extension)
 swi_12.5km_ucr # Richiamando il set vedo che valori variano tra 0 e 252: li metto come limiti con «zlim»
 # cla <- colorRampPalette(c('brown','yellow','dark blue'))(200)
-plot(swi_12.5km_ucr, col=clg, main="Soil Water Index in Ucraina (2015-2019)", zlim=c(0,252))
-plot(admin, add=T)
+plot(swi_12.5km_ucr, col=cla, main="Soil Water Index in Ucraina (2015-2019)", zlim=c(0,100))
+plotRGB(swi_12.5km_ucr, col=cla, main="Soil Water Index in Ucraina (2015-2019)", zlim=c(0,100), stretch=Lin)
+plot(admin.ucr, add=T)
 
 # Visualizzo solo un'immagine
-plot(swi2015r, col=clg, zlim=c(0,252))
+plot(swi2015r, col=cla, zlim=c(0,100))
 plot(admin, add=T)
 
 
-cl <- colorRampPalette(c('light blue','blue','dark blue'))(100)
-
-swi2015 <- raster("c_gls_SWI1km_201511081200_CEURO_SCATSAR_V1.0.1.nc")
-plot(swi2015, col=cl)
-
-ext <- c(7, 14, 44, 47)
-swi2015.po <- crop(swi2015, ext)
-swi2015.po # Richiamando il set vedo che valori variano tra 0 e 252: li metto come limiti con «zlim»
-plot(swi2015.po, col=cl, main="Soil Water Index in Pianura Padana nel 2015-2019", zlim=c(0,252))
-plot(admin, add=T)
-
-
-
-
-
+admin.ec <- crop(admin, ext)
+par(mfrow=c(1,2))
+plot(ecuador2014)
+plot(admin.ec, add=T)
+plot(ecuador2020)
+plot(admin.ec, add=T)
 
 dev.off()
