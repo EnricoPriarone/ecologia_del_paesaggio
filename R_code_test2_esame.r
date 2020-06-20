@@ -60,6 +60,7 @@ swi_12.5km <- stack(listafinale)
 # swi_12.5km       # È di classe RasterStack
 
 # Ritaglio le immagini
+ext <- c(108, 120, -4, 8)
 extension <- c(-18.3, 9.4, 2.5, 15.5) # Estesione della zona di studio
 swi_12.5km_afr <- crop(swi_12.5km, extension)
 swi_12.5km_afr     # Richiamando il set vedo che valori variano tra 0 e 99.5: li metto come limiti con «zlim»
@@ -73,7 +74,7 @@ plot(swi_12.5km_afr, col=cla, main="Soil Water Index in Africa Ovest (2015-2019)
 
 # Importo uno .shp contenente i confini di Stato e lo ritaglio nella zona che mi serve
 admin <- readOGR("ne_10m_admin_0_countries.shp")
-admin.afr <- crop(admin, extension)
+admin.afr <- crop(admin, ext)
 
 
 cll <- colorRampPalette(c('white', 'red', 'dark green', 'green', 'light green')) (400)
@@ -106,15 +107,15 @@ swi2019r <- raster("c_gls_SWI_201911071200_GLOBE_ASCAT_V3.1.1.nc")
 
 # Ritaglio tutte le immagini imponendo come estensione quella dell'  e faccio plot di verifica
 # extension <- c(-18.3, 9.4, 2.5, 15.5)
-swi2015r.afr <- crop(swi2015r, extension)
+swi2015r.afr <- crop(swi2015r, ext)
 # plot(swi2015r.afr, col=cla)
-swi2016r.afr <- crop(swi2016r, extension)
+swi2016r.afr <- crop(swi2016r, ext)
 # plot(swi2016r.afr, col=cla)
-swi2017r.afr <- crop(swi2017r, extension)
+swi2017r.afr <- crop(swi2017r, ext)
 # plot(swi2017r.afr, col=cla)
-swi2018r.afr <- crop(swi2018r, extension)
+swi2018r.afr <- crop(swi2018r, ext)
 # plot(swi2018r.afr, col=cla)
-swi2019r.afr <- crop(swi2019r, extension)
+swi2019r.afr <- crop(swi2019r, ext)
 # plot(swi2019r.afr, col=cla)
 
 
@@ -151,6 +152,23 @@ plot(swi2019r.afr, zlim=c(0,100), col=cla)
 
 
 # PROVA unsuperClass per i modelli  !!!!!!!
+
+
+fir0107_2015r_1 <- read.table("fire_archive_M6_134109.csv", head=T)
+fir0107_2015r_2 <- read.table("fire_archive_V1_134111.csv", head=T)
+fir07_2015r_1 <- read.table("fire_archive_M6_134112.csv", head=T)
+fir07_2015r_2 <- read.table("fire_archive_V1_134114.csv", head=T)
+
+summary(fir0107_2015r_1)
+# attach(fir0107_2015r_1)
+# plot(latitude, longitude, las=1)
+plot(fir0107_2015r_1$longitude, fir0107_2015r_1$latitude)
+plot(admin.afr, add=T)
+
+summary(fir07_2015r_1)
+# attach(fir0107_2015r_1)
+# plot(latitude, longitude, las=1)
+plot(fir07_2015r_1$longitude, fir07_2015r_1$latitude)
 
 
 # Carico incendi del 7 novembre delle annate da 2015 a 2019
