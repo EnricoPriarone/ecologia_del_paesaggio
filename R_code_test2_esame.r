@@ -20,12 +20,12 @@
 # Richiamo le librerie necessarie
 library(raster)
 library(ggplot2)
-# library(igraph)
+library(igraph)
 library(ncdf4)
 # library(GGally)
 library(spatstat)
 library(rgdal)
-# library(RStoolbox)
+library(RStoolbox)
 # library(gridExtra)
 # library(sdm)
 
@@ -60,40 +60,34 @@ swi_12.5km <- stack(listafinale)
 # swi_12.5km       # È di classe RasterStack
 
 # Ritaglio le immagini
-ext <- c(108, 120, -4, 8)
-extension <- c(-18.3, 9.4, 2.5, 15.5) # Estesione della zona di studio
-swi_12.5km_afr <- crop(swi_12.5km, extension)
-swi_12.5km_afr     # Richiamando il set vedo che valori variano tra 0 e 99.5: li metto come limiti con «zlim»
+ext <- c(108, 120, -5, 8) # Estesione della zona di studio: Borneo
+swi_12.5km_bor <- crop(swi_12.5km, ext)
+swi_12.5km_bor     # Richiamando il set vedo che valori variano tra 0 e 99.5: li metto come limiti con «zlim»
 
 # Graficizzo il set di immagini
 cla <- colorRampPalette(c('brown','yellow','dark blue'))(400)
-plot(swi_12.5km_afr, col=cla, main="Soil Water Index in Africa Ovest (2015-2019)", zlim=c(0,100))
-
+plot(swi_12.5km_bor, col=cla, main="Soil Water Index in Borneo (2015-2019)", zlim=c(0,100), las=1)
 
 
 
 # Importo uno .shp contenente i confini di Stato e lo ritaglio nella zona che mi serve
 admin <- readOGR("ne_10m_admin_0_countries.shp")
-admin.afr <- crop(admin, ext)
+admin.bor <- crop(admin, ext)
 
 
 cll <- colorRampPalette(c('white', 'red', 'dark green', 'green', 'light green')) (400)
 '''
 # Provo a creare mappa RGB
 plotRGB(swi_12.5km_afr, col=cll, zlim=c(0,100), stretch="Lin") # Non prende «main»
-# plot(admin.afr, add=T)
-'''
+# plot(admin.bor, add=T)
 
-
-
-
-'''
 # Le graficizzo insieme
 par(mfrow=c(2,1))
-plotRGB(swi_12.5km_ucr, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin")
+plotRGB(swi_12.5km_bor, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin")
 plot(dif_swi_1915, col=clgg)
 '''
 
+dev.off()
 
 ### Seconda parte
 
@@ -107,174 +101,243 @@ swi2019r <- raster("c_gls_SWI_201911071200_GLOBE_ASCAT_V3.1.1.nc")
 
 # Ritaglio tutte le immagini imponendo come estensione quella dell'  e faccio plot di verifica
 # extension <- c(-18.3, 9.4, 2.5, 15.5)
-swi2015r.afr <- crop(swi2015r, ext)
-# plot(swi2015r.afr, col=cla)
-swi2016r.afr <- crop(swi2016r, ext)
-# plot(swi2016r.afr, col=cla)
-swi2017r.afr <- crop(swi2017r, ext)
-# plot(swi2017r.afr, col=cla)
-swi2018r.afr <- crop(swi2018r, ext)
-# plot(swi2018r.afr, col=cla)
-swi2019r.afr <- crop(swi2019r, ext)
-# plot(swi2019r.afr, col=cla)
+# cla <- colorRampPalette(c('brown','yellow','dark blue'))(400)
+swi2015r.bor <- crop(swi2015r, ext)
+# plot(swi2015r.bor, col=cla, las=1, main="SWI Borneo 2015")
+# plot(admin.bor, add=T)
+swi2016r.bor <- crop(swi2016r, ext)
+# plot(swi2016r.bor, col=cla, las=1, main="SWI Borneo 2016")
+# plot(admin.bor, add=T)
+swi2017r.bor <- crop(swi2017r, ext)
+# plot(swi2017r.bor, col=cla, las=1, main="SWI Borneo 2017")
+# plot(admin.bor, add=T)
+swi2018r.bor <- crop(swi2018r, ext)
+# plot(swi2018r.bor, col=cla, las=1, main="SWI Borneo 2018")
+# plot(admin.bor, add=T)
+swi2019r.bor <- crop(swi2019r, ext)
+# plot(swi2019r.bor, col=cla, las=1, main="SWI Borneo 2019")
+# plot(admin.bor, add=T)
 
 
 
 # Cerco valori max e min delle immagini Copernicus del 2015 e del 2019
-swi2015r.afr # 0 --> 98
-swi2019r.afr # 0 --> 99.5
+swi2015r.bor # 0 --> 95
+swi2019r.bor # 0 --> 83.5
 
 # Graficizzo le due immagini e via via faccio confronti tra i vari anni
 # [clx <- colorRampPalette(c('red','yellow','light blue'))(100)]
 par(mfrow=c(1,2))
-plot(swi2015r.afr, zlim=c(0,100), col=cla)
-plot(admin.afr, add=T)
-plot(swi2019r.afr, zlim=c(0,100), col=cla)
-plot(admin.afr, add=T)
+plot(swi2015r.bor, zlim=c(0,100), col=cla, las=1, main="Confronto SWI 2015-2019 Borneo", xlab="long", ylab="lat")
+plot(admin.bor, add=T)
+plot(swi2019r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(admin.bor, add=T)
 
 '''
 par(mfrow=c(1,2))
-plot(swi2015r.afr, zlim=c(0,100), col=cla)
-plot(swi2016r.afr, zlim=c(0,100), col=cla)
+plot(swi2015r.bor, zlim=c(0,100), col=cla, las=1, main="Confronto SWI 2015-2016 Borneo", xlab="long", ylab="lat")
+plot(admin.bor, add=T)
+plot(swi2016r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(admin.bor, add=T)
 
 par(mfrow=c(1,2))
-plot(swi2016r.afr, zlim=c(0,100), col=cla)
-plot(swi2017r.afr, zlim=c(0,100), col=cla)
+plot(swi2016r.bor, zlim=c(0,100), col=cla, las=1, main="Confronto SWI 2016-2017 Borneo", xlab="long", ylab="lat")
+plot(admin.bor, add=T)
+plot(swi2017r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(admin.bor, add=T)
 
 par(mfrow=c(1,2))
-plot(swi2017r.afr, zlim=c(0,100), col=cla)
-plot(swi2018r.afr, zlim=c(0,100), col=cla)
+plot(swi2017r.bor, zlim=c(0,100), col=cla, las=1, main="Confronto SWI 2017-2018 Borneo", xlab="long", ylab="lat")
+plot(admin.bor, add=T)
+plot(swi2018r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(admin.bor, add=T)
 
 par(mfrow=c(1,2))
-plot(swi2018r.afr, zlim=c(0,100), col=cla)
-plot(swi2019r.afr, zlim=c(0,100), col=cla)
+plot(swi2018r.bor, zlim=c(0,100), col=cla, las=1, main="Confronto SWI 2018-2019 Borneo", xlab="long", ylab="lat")
+plot(admin.bor, add=T)
+plot(swi2019r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(admin.bor, add=T)
 '''
 
+dev.off()
 
-# PROVA unsuperClass per i modelli  !!!!!!!
 
 
-fir0107_2015r_1 <- read.table("fire_archive_M6_134109.csv", head=T)
-fir0107_2015r_2 <- read.table("fire_archive_V1_134111.csv", head=T)
-fir07_2015r_1 <- read.table("fire_archive_M6_134112.csv", head=T)
-fir07_2015r_2 <- read.table("fire_archive_V1_134114.csv", head=T)
 
-summary(fir0107_2015r_1)
-# attach(fir0107_2015r_1)
-# plot(latitude, longitude, las=1)
-plot(fir0107_2015r_1$longitude, fir0107_2015r_1$latitude)
-plot(admin.afr, add=T)
+### Analisi delle patches attracerso funzione «unsuperClass()» PER RICLASSIFICARE L'IMMAGINE UTILIZZANDO 2 CLASSI DI PIXELS
 
-summary(fir07_2015r_1)
-# attach(fir0107_2015r_1)
-# plot(latitude, longitude, las=1)
-plot(fir07_2015r_1$longitude, fir07_2015r_1$latitude)
+
+cldy <- colorRampPalette(c('dark green', 'yellow'))(100) 
+
+borneo2015_rec <- unsuperClass(swi2015r.bor, nClasses=3)
+borneo2019_rec <- unsuperClass(swi2019r.bor, nClasses=3)
+borneo2015_rec # Ha valori da 1 a 3
+borneo2019_rec # Ha valori da 1 a 3
+
+par(mfrow=c(2,2))
+plot(borneo2015_rec$map, col=cldy, las= 1, xlab="long", ylab="lat", main="Classi SWI create (3)")
+plot(swi2015r.bor, las=1, xlab="long", ylab="lat")
+
+plot(borneo2019_rec$map, col=cldy, las= 1, xlab="long", ylab="lat")
+plot(swi2019r.bor, las=1, xlab="long", ylab="lat")
+
+
+par(mfrow=c(1,2))
+plot(borneo2015_rec$map, col=cldy, las= 1, main="Valori SWI Borneo 2015 e 2019 in 3 classi:", xlab="long", ylab="lat")
+plot(borneo2019_rec$map, col=cldy, las=1, xlab="long", ylab="lat", main="1) Basso; 2) Alto; 3) Intermedio")
+
+
+cldw <- colorRampPalette(c('dark green', 'white')) (100)
+borneo2015_for <- reclassify(borneo2015_rec$map, cbind(1, 2, NA))
+borneo2019_for <- reclassify(borneo2019_rec$map, cbind(1, 2, NA))
+
+borneo2015_for.patches <- clump(borneo2015_for)
+borneo2019_for.patches <- clump(borneo2019_for)
+borneo2015_for.patches
+borneo2019_for.patches
+
+# patches:
+# 2015: 13
+# 2020: 20
+
+ 
+
+writeRaster(borneo2015_for.patches, "borneo2015_for.patches.tif")
+writeRaster(borneo2019_for.patches, "borneo2019_for.patches.tif")
+
+clp <- colorRampPalette(c('dark blue','blue','green','orange','yellow','red'))(100) # 
+
+par(mfrow=c(1,2))
+plot(borneo2015_for.patches,col=clp, las=1, main="Patches SWI Borneo 2015-2019")
+plot(borneo2019_for.patches,col=clp, las=1)
+
+par(mfrow=c(2,2))
+plot(borneo2015_for.patches,col=clp, las=1, main="Patches basso SWI Borneo 2015-2019 con incendi")
+plot(admin.bor, add=T)
+plot(borneo2019_for.patches,col=clp, las=1)
+plot(admin.bor, add=T)
+plot(borneo2015_for.patches,col=clp, las=1)
+plot(fire2015r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
+plot(borneo2019_for.patches,col=clp, las=1)
+plot(fire2019r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
+# SISTEMARE IL CODICE: GLI INCENDI LI DICHIARO DOPO
+
+dev.off(ù9
+
+# ANALISI MULTITEMPORALE DEL NUMERO DI PATCHES
+time <- c("Basso SWI 2015","Basso SWI 2019")
+npatches <- c(13,20)
+
+output <- data.frame(time,npatches)
+attach(output)
+
+ggplot(output, aes(x=time, y=npatches, color="red"), main="trrr") + geom_bar(stat="identity", fill="white")
+
+dev.off()
 
 
 # Carico incendi del 7 novembre delle annate da 2015 a 2019
 # Li plotto insieme ai rispettivi ritagli
-inc2015r <- readOGR("fire_archive_M6_134064.shp")
-# plot(inc2015r)
-inc2016r <- readOGR("fire_archive_M6_134067.shp")
-# plot(inc2016r)
-inc2017r <- readOGR("fire_archive_M6_134068.shp")
-# plot(inc2017r)
-inc2018r <- readOGR("fire_archive_M6_134069.shp")
-# plot(inc2018r)
-inc2019r <- readOGR("fire_archive_M6_134070.shp")
-# plot(inc2019r)
+fire2015r <- readOGR("fire_archive_V1_134134.shp")
+# plot(fire2015r)
+fire2016r <- readOGR("fire_archive_V1_134135.shp")
+# plot(fire2016r)
+fire2017r <- readOGR("fire_archive_V1_134136.shp")
+# plot(fire2017r)
+fire2018r <- readOGR("fire_archive_V1_134137.shp")
+# plot(fire2018r)
+fire2019r <- readOGR("fire_archive_V1_134138.shp")
+# plot(fire2019r)
 
 par(mfrow=c(5,1))
-plot(swi2015r.afr, zlim=c(0,100), col=cla) # «main» tolto perché non viene visualizzato
-plot(inc2015r, add=T, pch=21, col="red")
+plot(swi2015r.bor, zlim=c(0,100), col=cla, las=1, ylab="lat") # «main» tolto perché non viene visualizzato
+plot(fire2015r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
 
-plot(swi2016r.afr, zlim=c(0,100), col=cla)
-plot(inc2016r, add=T, pch=21, col="red")
+plot(swi2016r.bor, zlim=c(0,100), col=cla, las=1, ylab="lat")
+plot(fire2016r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
 
-plot(swi2017r.afr, zlim=c(0,100), col=cla)
-plot(inc2017r, add=T, pch=21, col="red")
+plot(swi2017r.bor, zlim=c(0,100), col=cla, las=1, ylab="lat")
+plot(fire2017r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
 
-plot(swi2018r.afr, zlim=c(0,100), col=cla)
-plot(inc2018r, add=T, pch=21, col="red")
+plot(swi2018r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(fire2018r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
 
-plot(swi2019r.afr, zlim=c(0,100), col=cla)
-plot(inc2019r, add=T, pch=21, col="red")
+plot(swi2019r.bor, zlim=c(0,100), col=cla, las=1, xlab="long", ylab="lat")
+plot(fire2019r, add=T, pch=21, col="red")
+plot(admin.bor, add=T)
 
-# POTREI AGGIUNGERE UNA CARTA TOPOGRAFICA O SATELLITARE SOTTO
 
 '''
-plotRGB(swi_12.5km_afr, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin", main="Soil Water Index in Ucraina (2015-2019)")
+plotRGB(swi_12.5km_bor, r=4, g=3, b=2, zlim=c(0,100), stretch="Lin", main="Soil Water Index in Borneo (2015-2019)")
 plot(dif_swi_1915, col=clgg)
 '''
 
+dev.off()
 
 
 # Provo a vedere se differenza tra SWI e incendi corrisponde
-dif_swi_1615 <- swi2016r.afr - swi2015r.afr
-dif_swi_1615 # Range: -43, 24.5
+dif_swi_1615 <- swi2016r.bor - swi2015r.bor
+dif_swi_1615 # Range: -60, 97
 # Se differenza dà risultato negativo significa che SWI è diminuito
 # Se differenza dà risultato positivo significa che si è verificato un aumento
 
 clr <- colorRampPalette(c('green', 'yellow', 'red')) (400)
 par(mfrow=c(3,1))
-plot(dif_swi_1615, col=clr)
-plot(admin.afr, add=T)
-plot(inc2015r, pch=21, col="blue")
-plot(admin.afr, add=T)
-plot(inc2016r, pch=21, col="red")
-plot(admin.afr, add=T)
+plot(dif_swi_1615, col=clr, las=1, main="Differenza SWI Borneo 2015-2016 con incendi")
+plot(admin.bor, add=T)
+plot(fire2015r, pch=21, col="blue", las=1)
+plot(admin.bor, add=T)
+plot(fire2016r, pch=21, col="red", las=1)
+plot(admin.bor, add=T)
 
 '''
-dif_swi_1716 <- swi2017r.afr - swi2016r.afr
-dif_swi_1716 # Range: -73, 24
+dif_swi_1716 <- swi2017r.bor - swi2016r.bor
+dif_swi_1716 # Range: -65, 51.5
 par(mfrow=c(3,1))
-plot(dif_swi_1716, col=clr)
-plot(admin.afr, add=T)
-plot(inc2016r, pch=21, col="blue")
-plot(admin.afr, add=T)
-plot(inc2017r, pch=21, col="red")
-plot(admin.afr, add=T)
+plot(dif_swi_1716, col=clr, las=1, main="Differenza SWI Borneo 2016-2017 con incendi")
+plot(admin.bor, add=T)
+plot(fire2016r, pch=21, col="blue")
+plot(admin.bor, add=T)
+plot(fire2017r, pch=21, col="red")
+plot(admin.bor, add=T)
 
-dif_swi_1817 <- swi2018r.afr - swi2017r.afr
-dif_swi_1817 # Range: -25, 80.5
+dif_swi_1817 <- swi2018r.bor - swi2017r.bor
+dif_swi_1817 # Range: -55.5, 46.5
 par(mfrow=c(3,1))
 plot(dif_swi_1817, col=clr)
-plot(admin.afr, add=T)
-plot(inc2018r, pch=21, col="blue")
-plot(admin.afr, add=T)
-plot(inc2017r, pch=21, col="red")
-plot(admin.afr, add=T)
+plot(admin.bor, add=T)
+plot(fire2018r, pch=21, col="blue")
+plot(admin.bor, add=T)
+plot(fire2017r, pch=21, col="red")
+plot(admin.bor, add=T)
 
-dif_swi_1918 <- swi2019r.afr - swi2018r.afr
-dif_swi_1918 # Range: -33, 39
+dif_swi_1918 <- swi2019r.bor - swi2018r.bor
+dif_swi_1918 # Range: -61.5, 29
 par(mfrow=c(3,1))
 plot(dif_swi_1918, col=clr)
-plot(admin.afr, add=T)
-plot(inc2019r, pch=21, col="blue")
-plot(admin.afr, add=T)
-plot(inc2018r, pch=21, col="red")
-plot(admin.afr, add=T)
+plot(admin.bor, add=T)
+plot(fire2019r, pch=21, col="blue")
+plot(admin.bor, add=T)
+plot(fire2018r, pch=21, col="red")
+plot(admin.bor, add=T)
 '''
 
 
 
 # Faccio differenza tra immagine 2015 e immagine 2019 e la graficizzo in scala di grigi
-dif_swi_1915 <- swi2019r.afr - swi2015r.afr
-dif_swi_1915 # Range: -38, 47
+dif_swi_1915 <- swi2019r.bor - swi2015r.bor
+dif_swi_1915 # Range: -76, 57.5
 clgg <- colorRampPalette(c('black','grey','red'))(100)
 par(mfrow=c(3,1))
-plot(swi2019r.afr, zlim=c(0,100))
-plot(swi2015r.afr, zlim=c(0,100))
-plot(dif_swi_1915, col=clgg)
+plot(swi2019r.bor, zlim=c(0,100), las=1, main="Differenza SWI 2019-2015", col=cla, xlab="long", ylab="lat")
+plot(swi2015r.bor, zlim=c(0,100), col=cla, xlab="long", ylab="lat", las=1)
+plot(dif_swi_1915, col=clgg, xlab="long", ylab="lat", las=1)
 # Dove è nero c'è stata una forte diminuzione, mentre dove è rosso un aumento
-
-
-# PATCHES!!!!!!!!
-
-
-
-# Provo a fare un grafico dei dati
-ggplot(dif_swi_1915, aes(x=lon, y=lat, size=cases)) + geom_point()
 
 
 
