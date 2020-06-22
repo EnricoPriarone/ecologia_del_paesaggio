@@ -1690,22 +1690,22 @@ dev.off()
 
 
 
-### Terza parte
+### Quarta parte
 
 # Uso funzione «unsuperClass()» per riclassificare immagini in 2 classi
 
 cldy <- colorRampPalette(c('dark green', 'yellow'))(100)  # legenda
 
-# Lavoro sulle immagini del 2015 e del 2019 (anni con più incendi)
-borneo2015_rec <- unsuperClass(swi2015r.bor, nClasses=2)
+# Lavoro sulle immagini del 2017 e del 2019 (anni con valori SWI e incendi molto diversi)
+borneo2017_rec <- unsuperClass(swi2017r.bor, nClasses=2)
 borneo2019_rec <- unsuperClass(swi2019r.bor, nClasses=2)
-borneo2015_rec # Ha valori da 1 a 2: divisione fatta!
+borneo2017_rec # Ha valori da 1 a 2: divisione fatta!
 borneo2019_rec # Ha valori da 1 a 2: divisione fatta!
 
 # Graficizzo le classi create per vedere a che valori corrispondono e le metto a confronto con immagini Copernicus originali
 par(mfrow=c(2,2))
-plot(borneo2015_rec$map, col=cldy, las= 1, xlab="long", ylab="lat", main="Classi SWI create (2)")
-plot(swi2015r.bor, las=1, xlab="long", ylab="lat")
+plot(borneo2017_rec$map, col=cldy, las= 1, xlab="long", ylab="lat", main="Classi SWI create (2) 2017 e 2019")
+plot(swi2017r.bor, las=1, xlab="long", ylab="lat")
 
 plot(borneo2019_rec$map, col=cldy, las= 1, xlab="long", ylab="lat")
 plot(swi2019r.bor, las=1, xlab="long", ylab="lat")
@@ -1716,26 +1716,26 @@ dev.off()
 
 # Graficizzo solo le due immagini con le classi
 par(mfrow=c(1,2))
-plot(borneo2015_rec$map, col=cldy, las= 1, main="Valori SWI Borneo 2015 e 2019 in 2 classi:", xlab="long", ylab="lat")
-plot(borneo2019_rec$map, col=cldy, las=1, xlab="long", ylab="lat", main="1) Basso; 2) Alto")
+plot(borneo2017_rec$map, col=cldy, las= 1, main="Valori SWI Borneo 2017 e 2019 in 2 classi:", xlab="long", ylab="lat")
+plot(borneo2019_rec$map, col=cldy, las=1, xlab="long", ylab="lat", main="1) Alto; 2) Basso")
 
-# Uso funzione «reclassify()» per eliminare la seconda classe, corrispondente ai valori alti
+# Uso funzione «reclassify()» per eliminare la prima classe, corrispondente ai valori alti
 # Voglio lavorare solo su valori bassi, così da poterli confrontare con gli incendi
-borneo2015_for <- reclassify(borneo2015_rec$map, cbind(2, NA))
-borneo2019_for <- reclassify(borneo2019_rec$map, cbind(2, NA))
+borneo2017_for <- reclassify(borneo2017_rec$map, cbind(1, NA))
+borneo2019_for <- reclassify(borneo2019_rec$map, cbind(1, NA))
 
 # Uso funzione «clump()» per suddividere quello che ho ottenuto in patches
-borneo2015_for.patches <- clump(borneo2015_for)
+borneo2017_for.patches <- clump(borneo2017_for)
 borneo2019_for.patches <- clump(borneo2019_for)
-borneo2015_for.patches
+borneo2017_for.patches
 borneo2019_for.patches
 
 # patches:
-# 2015: 36
+# 2015: 21
 # 2019: 24
 
 # Creo due immagini .tif con le nuove suddivisioni
-writeRaster(borneo2015_for.patches, "borneo2015_for.patches.tif")
+writeRaster(borneo2017_for.patches, "borneo2017_for.patches.tif")
 writeRaster(borneo2019_for.patches, "borneo2019_for.patches.tif")
 
 dev.off()
@@ -1744,18 +1744,18 @@ dev.off()
 clp <- colorRampPalette(c('dark blue','blue','green','orange','yellow','red'))(100)
 
 par(mfrow=c(1,2))
-plot(borneo2015_for.patches,col=clp, las=1, main="Patches SWI Borneo 2015-2019", xlab="long", ylab="lat")
+plot(borneo2017_for.patches,col=clp, las=1, main="Patches SWI Borneo 2017-2019", xlab="long", ylab="lat")
 plot(borneo2019_for.patches,col=clp, las=1, xlab="long", ylab="lat")
 dev.off()
 
-# Le graficizzo confrontandole con gli incendi del 2015 e del 2019
+# Le graficizzo confrontandole con gli incendi del 2017 e del 2019
 par(mfrow=c(2,2))
-plot(borneo2015_for.patches,col=clp, las=1, main="Patches basso SWI Borneo 2015-2019 con incendi", xlab="long", ylab="lat")
+plot(borneo2017_for.patches,col=clp, las=1, main="Patches basso SWI Borneo 2017-2019 con incendi", xlab="long", ylab="lat")
 plot(admin.bor, add=T)
 plot(borneo2019_for.patches,col=clp, las=1, xlab="long", ylab="lat")
 plot(admin.bor, add=T)
-plot(borneo2015_for.patches,col=clp, las=1, xlab="long", ylab="lat")
-plot(fire2015r, add=T, pch=21, col="red")
+plot(borneo2017_for.patches,col=clp, las=1, xlab="long", ylab="lat")
+plot(fire2017r, add=T, pch=21, col="red")
 plot(admin.bor, add=T)
 plot(borneo2019_for.patches,col=clp, las=1, xlab="long", ylab="lat")
 plot(fire2019r, add=T, pch=21, col="red")
@@ -1763,9 +1763,9 @@ plot(admin.bor, add=T)
 
 dev.off()
 
-# Creo un grafico con «ggplot()» che rappresenta la suddivisione in patches nel 2015 e nel 2019
-time <- c("Basso SWI 2015","Basso SWI 2019")
-npatches <- c(13,20)
+# Creo un grafico con «ggplot()» che rappresenta la suddivisione in patches nel 2017 e nel 2019
+time <- c("Basso SWI 2017","Basso SWI 2019")
+npatches <- c(21,24)
 
 doc <- data.frame(time,npatches)
 attach(doc)
